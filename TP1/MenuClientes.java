@@ -59,26 +59,26 @@ public class MenuClientes {
 
     public void buscarCliente() {
         System.out.println("\nBusca de cliente");
-        String cpf;
-        boolean cpfValido = false;
+        String email;
+        boolean emailValido = false;
 
         do {
-            System.out.print("\nCPF (11 dígitos): ");
-            cpf = console.nextLine();  // Lê o CPF digitado pelo usuário
+            System.out.print("\nEmail: ");
+            email = console.nextLine();  // Lê o email digitado pelo usuário
 
-            if(cpf.isEmpty())
+            if(email.isEmpty())
                 return; 
 
-            // Validação do CPF (11 dígitos e composto apenas por números)
-            if (cpf.length() == 11 && cpf.matches("\\d{11}")) {
-                cpfValido = true;  // CPF válido
+            // Validação do email (formato básico)
+            if (email.contains("@") && email.contains(".")) {
+                emailValido = true;  // Email válido
             } else {
-                System.out.println("CPF inválido. O CPF deve conter exatamente 11 dígitos numéricos, sem pontos e traços.");
+                System.out.println("Email inválido. O email deve conter '@' e '.com'.");
             }
-        } while (!cpfValido);
+        } while (!emailValido);
 
         try {
-            Cliente cliente = arqClientes.read(cpf);  // Chama o método de leitura da classe Arquivo
+            Cliente cliente = arqClientes.read(email);  // Chama o método de leitura da classe Arquivo
             if (cliente != null) {
                 mostraCliente(cliente);  // Exibe os detalhes do cliente encontrado
             } else {
@@ -93,12 +93,13 @@ public class MenuClientes {
 
     public void incluirCliente() {
         System.out.println("\nInclusão de cliente");
+        int id = -1;
         String nome = "";
-        String cpf = "";
-        float salario = 0;
-        LocalDate dataNascimento = null;
+        String email = "";
+        String senha = "";
+        String perguntaSecreta = "";
+        String respostaSecreta = "";
         boolean dadosCorretos = false;
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
         do {
             System.out.print("\nNome (min. de 4 letras ou vazio para cancelar): ");
@@ -110,41 +111,30 @@ public class MenuClientes {
         } while(nome.length()<4);
 
         do {
-            System.out.print("CPF (11 dígitos sem pontos ou traço): ");
-            cpf = console.nextLine();
-            if(cpf.length()!=11 && cpf.length()!=0)
-                System.err.println("O CPF deve ter exatamente 11 dígitos.");
-        } while(cpf.length()!=11 && cpf.length()!=0);
+            System.out.print("Email: ");
+            email = console.nextLine();
+        } while(email.isEmpty());
 
         do {
-            dadosCorretos = false;
-            System.out.print("Salário: ");
-            if (console.hasNextFloat()) {
-                salario = console.nextFloat();
-                dadosCorretos = true;
-            } else {
-                System.err.println("Salário inválido! Por favor, insira um número válido.");
-            }
-            console.nextLine(); // Limpar o buffer 
-        } while(!dadosCorretos);
+            System.out.print("Pergunta secreta: ");
+            perguntaSecreta = console.nextLine();
+        } while(perguntaSecreta.isEmpty());
 
         do {
-            System.out.print("Data de nascimento (DD/MM/AAAA): ");
-            String dataStr = console.nextLine();
-            dadosCorretos = false;
-            try {
-                dataNascimento = LocalDate.parse(dataStr, formatter);
-                dadosCorretos = true;
-            } catch (Exception e) {
-                System.err.println("Data inválida! Use o formato DD/MM/AAAA.");
-            }
-        } while(!dadosCorretos);
+            System.out.print("Resposta secreta: ");
+            respostaSecreta = console.nextLine();
+        } while(respostaSecreta.isEmpty());
 
-        System.out.print("\nConfirma a inclusão da cliente? (S/N) ");
+        do {
+            System.out.print("Senha: ");
+            senha = console.nextLine();
+        } while(senha.isEmpty());
+
+        System.out.print("\nConfirma a inclusão do usuário? (S/N) ");
         char resp = console.nextLine().charAt(0);
         if(resp=='S' || resp=='s') {
             try {
-                Cliente c = new Cliente(nome, cpf, salario, dataNascimento);
+                Cliente c = new Cliente(id, nome, email, senha, perguntaSecreta, respostaSecreta);
                 arqClientes.create(c);
                 System.out.println("Cliente incluído com sucesso.");
             } catch(Exception e) {
@@ -155,67 +145,37 @@ public class MenuClientes {
 
     public void alterarCliente() {
         System.out.println("\nAlteração de cliente");
-        String cpf;
-        boolean cpfValido = false;
+        String email;
+        boolean emailValido = false;
 
         do {
-            System.out.print("\nCPF (11 dígitos): ");
-            cpf = console.nextLine();  // Lê o CPF digitado pelo usuário
+            System.out.print("\nEmail: ");
+            email = console.nextLine();  // Lê o email digitado pelo usuário
 
-            if(cpf.isEmpty())
+            if(email.isEmpty())
                 return; 
 
-            // Validação do CPF (11 dígitos e composto apenas por números)
-            if (cpf.length() == 11 && cpf.matches("\\d{11}")) {
-                cpfValido = true;  // CPF válido
+            // Validação do email (formato básico)
+            if (email.contains("@") && email.contains(".")) {
+                emailValido = true;  // Email válido
             } else {
-                System.out.println("CPF inválido. O CPF deve conter exatamente 11 dígitos numéricos, sem pontos e traços.");
+                System.out.println("Email inválido. O email deve conter '@' e '.']");
             }
-        } while (!cpfValido);
+        } while (!emailValido);
 
 
         try {
             // Tenta ler o cliente com o ID fornecido
-            Cliente cliente = arqClientes.read(cpf);
+            Cliente cliente = arqClientes.read(email);
             if (cliente != null) {
                 System.out.println("Cliente encontrado:");
                 mostraCliente(cliente);  // Exibe os dados do cliente para confirmação
 
-                // Alteração de nome
-                System.out.print("\nNovo nome (deixe em branco para manter o anterior): ");
-                String novoNome = console.nextLine();
-                if (!novoNome.isEmpty()) {
-                    cliente.nome = novoNome;  // Atualiza o nome se fornecido
-                }
-
-                // Alteração de CPF
-                System.out.print("Novo CPF (deixe em branco para manter o anterior): ");
-                String novoCpf = console.nextLine();
-                if (!novoCpf.isEmpty()) {
-                    cliente.cpf = novoCpf;  // Atualiza o CPF se fornecido
-                }
-
-                // Alteração de salário
-                System.out.print("Novo salário (deixe em branco para manter o anterior): ");
-                String novoSalarioStr = console.nextLine();
-                if (!novoSalarioStr.isEmpty()) {
-                    try {
-                        cliente.salario = Float.parseFloat(novoSalarioStr);  // Atualiza o salário se fornecido
-                    } catch (NumberFormatException e) {
-                        System.err.println("Salário inválido. Valor mantido.");
-                    }
-                }
-
-                // Alteração de data de nascimento
-                System.out.print("Nova data de nascimento (DD/MM/AAAA) (deixe em branco para manter a anterior): ");
-                String novaDataStr = console.nextLine();
-                if (!novaDataStr.isEmpty()) {
-                    try {
-                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-                        cliente.nascimento = LocalDate.parse(novaDataStr, formatter);  // Atualiza a data de nascimento se fornecida
-                    } catch (Exception e) {
-                        System.err.println("Data inválida. Valor mantido.");
-                    }
+                // Alteração de email
+                System.out.print("\nNovo email (deixe em branco para manter o anterior): ");
+                String novoEmail = console.nextLine();
+                if (!novoEmail.isEmpty()) {
+                    cliente.email = novoEmail;  // Atualiza o email se fornecido
                 }
 
                 // Confirmação da alteração
@@ -245,27 +205,27 @@ public class MenuClientes {
 
     public void excluirCliente() {
         System.out.println("\nExclusão de cliente");
-        String cpf;
-        boolean cpfValido = false;
+        String emailString;
+        boolean emailValido = false;
 
         do {
-            System.out.print("\nCPF (11 dígitos): ");
-            cpf = console.nextLine();  // Lê o CPF digitado pelo usuário
+            System.out.print("\nEmail: ");
+            emailString = console.nextLine();  // Lê o email digitado pelo usuário
 
-            if(cpf.isEmpty())
+            if(emailString.isEmpty())
                 return; 
 
-            // Validação do CPF (11 dígitos e composto apenas por números)
-            if (cpf.length() == 11 && cpf.matches("\\d{11}")) {
-                cpfValido = true;  // CPF válido
+            // Validação do email (formato básico)
+            if (emailString.contains("@") && emailString.contains(".")) {
+                emailValido = true;  // Email válido
             } else {
-                System.out.println("CPF inválido. O CPF deve conter exatamente 11 dígitos numéricos, sem pontos e traços.");
+                System.out.println("Email inválido. O email deve conter '@' e '.']");
             }
-        } while (!cpfValido);
+        } while (!emailValido);
 
         try {
             // Tenta ler o cliente com o ID fornecido
-            Cliente cliente = arqClientes.read(cpf);
+            Cliente cliente = arqClientes.read(emailString);
             if (cliente != null) {
                 System.out.println("Cliente encontrado:");
                 mostraCliente(cliente);  // Exibe os dados do cliente para confirmação
@@ -274,7 +234,7 @@ public class MenuClientes {
                 char resp = console.next().charAt(0);  // Lê a resposta do usuário
 
                 if (resp == 'S' || resp == 's') {
-                    boolean excluido = arqClientes.delete(cpf);  // Chama o método de exclusão no arquivo
+                    boolean excluido = arqClientes.delete(emailString);  // Chama o método de exclusão no arquivo
                     if (excluido) {
                         System.out.println("Cliente excluído com sucesso.");
                     } else {
@@ -298,9 +258,7 @@ public class MenuClientes {
         System.out.println("\nDetalhes do Cliente:");
         System.out.println("----------------------");
         System.out.printf("Nome......: %s%n", cliente.nome);
-        System.out.printf("CPF.......: %s%n", cliente.cpf);
-        System.out.printf("Salário...: R$ %.2f%n", cliente.salario);
-        System.out.printf("Nascimento: %s%n", cliente.nascimento.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+        System.out.printf("Email.....: %s%n", cliente.email);
         System.out.println("----------------------");
     }
 }

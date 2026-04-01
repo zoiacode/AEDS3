@@ -19,7 +19,7 @@ public class ArquivoCliente extends TP1.aed3.Arquivo<Cliente> {
     @Override
     public int create(Cliente c) throws Exception {
         int id = super.create(c);
-        indiceIndiretoCPF.create(new ParCPFID(c.getCpf(), id));
+        indiceIndiretoCPF.create(new ParCPFID(c.getEmail(), id));
         return id;
     }
 
@@ -43,18 +43,18 @@ public class ArquivoCliente extends TP1.aed3.Arquivo<Cliente> {
         Cliente c = super.read(id);
         if(c != null) {
             if(super.delete(id))
-                return indiceIndiretoCPF.delete(ParCPFID.hash(c.getCpf()));
+                return indiceIndiretoCPF.delete(ParCPFID.hash(c.getEmail()));
         }
         return false;
     }
 
     @Override
     public boolean update(Cliente novoCliente) throws Exception {
-        Cliente clienteVelho = read(novoCliente.getCpf());
+        Cliente clienteVelho = read(novoCliente.getEmail());
         if(super.update(novoCliente)) {
-            if(novoCliente.getCpf().compareTo(clienteVelho.getCpf())!=0) {
-                indiceIndiretoCPF.delete(ParCPFID.hash(clienteVelho.getCpf()));
-                indiceIndiretoCPF.create(new ParCPFID(novoCliente.getCpf(), novoCliente.getId()));
+            if(novoCliente.getEmail().compareTo(clienteVelho.getEmail())!=0) {
+                indiceIndiretoCPF.delete(ParCPFID.hash(clienteVelho.getEmail()));
+                indiceIndiretoCPF.create(new ParCPFID(novoCliente.getEmail(), novoCliente.getId()));
             }
             return true;
         }
