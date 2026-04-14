@@ -12,48 +12,44 @@ public class MenuClientes {
         arqClientes = new ArquivoCliente();
     }
 
-    public void menu() {
+    public Cliente login() {
+        System.out.println("\nENTREPARES 1.0 - LOGIN");
+        System.out.println("-----------------------");
+        System.out.print("Email: ");
+        String email = console.nextLine();
+        System.out.print("Senha: ");
+        String senha = console.nextLine();
 
-        int opcao;
-        do {
+        try {
+            // O arqClientes.read deve usar a Tabela Hash para achar o email
+            Cliente c = arqClientes.read(email); 
 
-            System.out.println("\n\nAEDsIII");
-            System.out.println("-------");
-            System.out.println("> Início > Clientes");
-            System.out.println("\n1 - Buscar");
-            System.out.println("2 - Incluir");
-            System.out.println("3 - Alterar");
-            System.out.println("4 - Excluir");
-            System.out.println("0 - Voltar");
-
-            System.out.print("\nOpção: ");
-            try {
-                opcao = Integer.valueOf(console.nextLine());
-            } catch(NumberFormatException e) {
-                opcao = -1;
+            if (c != null && c.senha == String.valueOf(senha.hashCode())) {
+                System.out.println("\nLogin efetuado com sucesso!");
+                return c;
+            } else {
+                System.out.println("\n[Erro] Email ou senha incorretos.");
             }
+        } catch (Exception e) {
+            System.out.println("Erro ao acessar dados de segurança.");
+        }
+        return null;
+    }
 
-            switch (opcao) {
-                case 1:
-                    buscarCliente();
-                    break;
-                case 2:
-                    incluirCliente();
-                    break;
-                case 3:
-                    alterarCliente();
-                    break;
-                case 4:
-                    excluirCliente();
-                    break;
-                case 0:
-                    break;
-                default:
-                    System.out.println("Opção inválida!");
-                    break;
-            }
+    public void gerenciarDados(Cliente logado) {
+        System.out.println("\n> Início > Meus Dados");
+        mostraCliente(logado);
 
-        } while (opcao != 0);
+        System.out.println("\n(1) Alterar meus dados");
+        System.out.println("(2) Excluir minha conta");
+        System.out.println("(0) Voltar");
+        System.out.print("\nOpção: ");
+        
+        String opt = console.nextLine();
+        switch (opt) {
+            case "1": alterarDadosLogado(logado); break;
+            case "2": excluirContaLogado(logado); break;
+        }
     }
 
 
@@ -134,18 +130,23 @@ public class MenuClientes {
         char resp = console.nextLine().charAt(0);
         if(resp=='S' || resp=='s') {
             try {
+                if(arqClientes.read(email) != null) {
+                    System.out.println("Erro: Este e-mail já está cadastrado!");
+                    return;
+                }
+                // Use o construtor que ajustamos anteriormente com HASH
                 Cliente c = new Cliente(id, nome, email, senha, perguntaSecreta, respostaSecreta);
                 arqClientes.create(c);
-                System.out.println("Cliente incluído com sucesso.");
-            } catch(Exception e) {
-                System.out.println("Erro do sistema. Não foi possível incluir o cliente!");
+                System.out.println("Usuário cadastrado com sucesso!");
+            }catch(Exception e) {
+                System.out.println("Erro ao salvar.");
             }
         }
     }
 
-    public void alterarCliente() {
+    public void alterarDadosLogado(Cliente logado) {
         System.out.println("\nAlteração de cliente");
-        String email;
+        String email = logado.email;
         boolean emailValido = false;
 
         do {
@@ -203,9 +204,9 @@ public class MenuClientes {
     }
 
 
-    public void excluirCliente() {
+    public void excluirContaLogado(Cliente logado) {
         System.out.println("\nExclusão de cliente");
-        String emailString;
+        String emailString = logado.email;
         boolean emailValido = false;
 
         do {
