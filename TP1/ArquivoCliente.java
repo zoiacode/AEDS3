@@ -4,37 +4,37 @@ import TP1.aed3.*;
 public class ArquivoCliente extends TP1.aed3.Arquivo<Cliente> {
 
     Arquivo<Cliente> arqClientes;
-    HashExtensivel<ParCPFID> indiceIndiretoCPF;
+    HashExtensivel<ParCPFID> indiceIndiretoEmail;
 
     public ArquivoCliente() throws Exception {
         super("clientes", Cliente.class.getConstructor());
-        indiceIndiretoCPF = new HashExtensivel<>(
+        indiceIndiretoEmail = new HashExtensivel<>(
             ParCPFID.class.getConstructor(), 
             4, 
-            ".\\dados\\clientes\\indiceCPF.d.db",   // diretório
-            ".\\dados\\clientes\\indiceCPF.c.db"    // cestos 
+            ".\\dados\\clientes\\indiceEmail.d.db",   // diretório
+            ".\\dados\\clientes\\indiceEmail.c.db"    // cestos 
         );
     }
 
     @Override
     public int create(Cliente c) throws Exception {
         int id = super.create(c);
-        indiceIndiretoCPF.create(new ParCPFID(c.getEmail(), id));
+        indiceIndiretoEmail.create(new ParCPFID(c.getEmail(), id));
         return id;
     }
 
-    public Cliente read(String cpf) throws Exception {
-        ParCPFID pci = indiceIndiretoCPF.read(ParCPFID.hash(cpf));
+    public Cliente read(String email) throws Exception {
+        ParCPFID pci = indiceIndiretoEmail.read(ParCPFID.hash(email));
         if(pci == null)
             return null;
         return read(pci.getId());
     }
     
-    public boolean delete(String cpf) throws Exception {
-        ParCPFID pci = indiceIndiretoCPF.read(ParCPFID.hash(cpf));
+    public boolean delete(String email) throws Exception {
+        ParCPFID pci = indiceIndiretoEmail.read(ParCPFID.hash(email));
         if(pci != null) 
             if(delete(pci.getId())) 
-                return indiceIndiretoCPF.delete(ParCPFID.hash(cpf));
+                return indiceIndiretoEmail.delete(ParCPFID.hash(email));
         return false;
     }
 
@@ -43,7 +43,7 @@ public class ArquivoCliente extends TP1.aed3.Arquivo<Cliente> {
         Cliente c = super.read(id);
         if(c != null) {
             if(super.delete(id))
-                return indiceIndiretoCPF.delete(ParCPFID.hash(c.getEmail()));
+                return indiceIndiretoEmail.delete(ParCPFID.hash(c.getEmail()));
         }
         return false;
     }
@@ -53,8 +53,8 @@ public class ArquivoCliente extends TP1.aed3.Arquivo<Cliente> {
         Cliente clienteVelho = read(novoCliente.getEmail());
         if(super.update(novoCliente)) {
             if(novoCliente.getEmail().compareTo(clienteVelho.getEmail())!=0) {
-                indiceIndiretoCPF.delete(ParCPFID.hash(clienteVelho.getEmail()));
-                indiceIndiretoCPF.create(new ParCPFID(novoCliente.getEmail(), novoCliente.getId()));
+                indiceIndiretoEmail.delete(ParCPFID.hash(clienteVelho.getEmail()));
+                indiceIndiretoEmail.create(new ParCPFID(novoCliente.getEmail(), novoCliente.getId()));
             }
             return true;
         }
