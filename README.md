@@ -34,7 +34,7 @@ O sistema implementa um gerenciador de usuários e cursos para o projeto **Entre
 
 Ao iniciar o sistema, o usuário é apresentado a um menu com as opções de **login** (para usuários já cadastrados) e **cadastro** (para novos usuários). O login é realizado por e-mail e senha, com validação via índice hash extensível.
 
-![alt text](./imagens/image1.png)
+![alt text](./Imagens/image1.png)
 
 ---
 
@@ -42,7 +42,7 @@ Ao iniciar o sistema, o usuário é apresentado a um menu com as opções de **l
 
 Após autenticação bem-sucedida, o usuário acessa o menu principal com três opções: **Meus Dados**, **Meus Cursos** e **Minhas Inscrições**.
 
-![alt text](./imagens/image2.png)
+![alt text](./Imagens/image2.png)
 
 ---
 
@@ -50,7 +50,7 @@ Após autenticação bem-sucedida, o usuário acessa o menu principal com três 
 
 Permite ao usuário visualizar e editar suas informações pessoais (nome e e-mail). As alterações são persistidas no arquivo binário de clientes com atualização do índice hash.
 
-![alt text](./imagens/image3.png)
+![alt text](./Imagens/image3.png)
 
 ---
 
@@ -58,7 +58,7 @@ Permite ao usuário visualizar e editar suas informações pessoais (nome e e-ma
 
 Exibe a lista numerada dos cursos cadastrados pelo usuário autenticado, ordenados **alfabeticamente**. Cada item mostra o nome do curso e a data de início. A partir desta tela é possível acessar os detalhes de um curso ou criar um novo.
 
-![alt text](./imagens/image4.png)
+![alt text](./Imagens/image4.png)
 
 ---
 
@@ -66,7 +66,7 @@ Exibe a lista numerada dos cursos cadastrados pelo usuário autenticado, ordenad
 
 Apresenta todas as informações de um curso selecionado: **código NanoID**, nome, descrição, data de início e status atual. Disponibiliza as ações: editar curso, encerrar inscrições, concluir curso e cancelar curso.
 
-![alt text](./imagens/image5.png)
+![alt text](./Imagens/image5.png)
 
 ---
 
@@ -74,7 +74,7 @@ Apresenta todas as informações de um curso selecionado: **código NanoID**, no
 
 Formulário de cadastro de um novo curso, onde o usuário informa nome, descrição e data de início. O sistema gera automaticamente um código NanoID único e associa o curso ao usuário autenticado via `idUsuario`.
 
-![alt text](./imagens/image6.png)
+![alt text](./Imagens/image6.png)
 
 ---
 
