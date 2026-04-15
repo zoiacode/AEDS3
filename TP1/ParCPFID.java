@@ -5,11 +5,12 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-public class ParCPFID implements TP1.aed3.RegistroHashExtensivel<ParCPFID> {
+public class ParCPFID implements aed3.RegistroHashExtensivel<ParCPFID> {
     
     private String emailString; // chave
     private int id;     // valor
-    private final short TAMANHO = 15;  // tamanho em bytes
+    private static final short EMAIL_BYTES = 64; // tamanho fixo em bytes para o email
+    private final short TAMANHO = (short) (EMAIL_BYTES + 4);  // email + id
 
     public ParCPFID() {
         this.emailString = "";
@@ -17,11 +18,10 @@ public class ParCPFID implements TP1.aed3.RegistroHashExtensivel<ParCPFID> {
     }
 
     public ParCPFID(String emailString, int id) throws Exception {
-        // Certifique-se de que o email contém um formato válido
-        if (!emailString.contains("@") || !emailString.contains(".")) {
+        if (emailString == null || !emailString.contains("@") || !emailString.contains(".")) {
             throw new IllegalArgumentException("Email deve conter '@' e '.com'.");
         }
-        this.emailString = emailString;
+        this.emailString = emailString.trim();
         this.id = id;
     }
 
@@ -50,7 +50,13 @@ public class ParCPFID implements TP1.aed3.RegistroHashExtensivel<ParCPFID> {
     public byte[] toByteArray() throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         DataOutputStream dos = new DataOutputStream(baos);
-        dos.write(this.emailString.getBytes());
+        byte[] emailBytes = this.emailString.getBytes("UTF-8");
+        if (emailBytes.length > EMAIL_BYTES) {
+            dos.write(emailBytes, 0, EMAIL_BYTES);
+        } else {
+            dos.write(emailBytes);
+            dos.write(new byte[EMAIL_BYTES - emailBytes.length]);
+        }
         dos.writeInt(this.id);
         return baos.toByteArray();
     }
@@ -58,26 +64,20 @@ public class ParCPFID implements TP1.aed3.RegistroHashExtensivel<ParCPFID> {
     public void fromByteArray(byte[] ba) throws IOException {
         ByteArrayInputStream bais = new ByteArrayInputStream(ba);
         DataInputStream dis = new DataInputStream(bais);
-        byte[] b = new byte[11];
-        dis.read(b);
-        this.emailString = new String(b);
+        byte[] b = new byte[EMAIL_BYTES];
+        dis.readFully(b);
+        this.emailString = new String(b, "UTF-8").trim();
         this.id = dis.readInt();
     }
 
     public static int hash(String email) throws IllegalArgumentException {
-        // Certifique-se de que o email contém um formato válido
-        if (!email.contains("@") || !email.contains(".")) {
+        if (email == null || !email.contains("@") || !email.contains(".")) {
             throw new IllegalArgumentException("Email deve conter '@' e '.com'.");
         }
-
-        // Converter o email para um número inteiro longo
-        long emailLong = Long.parseLong(email.replace("@", "").replace(".", ""));
-
-        // Aplicar uma função de hash usando um número primo grande
-        int hashValue = (int) (emailLong % (int)(1e9 + 7));
-
-        // Retornar um valor positivo
-        return Math.abs(hashValue);
+        int h = email.trim().toLowerCase().hashCode();
+        if (h == Integer.MIN_VALUE)
+            return 0;
+        return Math.abs(h);
     }
 
 

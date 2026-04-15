@@ -18,6 +18,17 @@ public class MenuCursos {
      * @param usuario Cliente logado
      */
     public void menu(Cliente usuario) {
+        // Inicializa cursos de exemplo para o usuário ROBERTO
+        try {
+            int[] cursosExistentes = listarCursos(usuario.getId());
+            if (usuario.email.equals("tamoficandovelho@gmail.com") && 
+                (cursosExistentes == null || cursosExistentes.length == 0)) {
+                inicializarCursosExemplo(usuario);
+            }
+        } catch (Exception e) {
+            // Ignora erro na verificação inicial
+        }
+        
         String opcao;
         do {
             System.out.println("\nEntrePares 1.0");
@@ -25,7 +36,7 @@ public class MenuCursos {
             System.out.println("> Início > Meus Cursos");
             System.out.println("\nOlá, " + usuario.nome + "!");
             
-            listarCursos(usuario.getId());
+            int[] cursosIds = listarCursos(usuario.getId());
             
             System.out.println("\n(A) Novo curso");
             System.out.println("(R) Retornar ao menu anterior");
@@ -42,8 +53,21 @@ public class MenuCursos {
                     // Tenta interpretar como número para selecionar um curso
                     try {
                         int numCurso = Integer.parseInt(opcao);
-                        // Implementação futura para selecionar curso por número
-                        System.out.println("[Funcionalidade em desenvolvimento]");
+                        if (numCurso >= 1 && numCurso <= cursosIds.length) {
+                            int idCurso = cursosIds[numCurso - 1];
+                            try {
+                                Curso curso = arqCursos.read(idCurso);
+                                if (curso != null) {
+                                    menuCurso(curso, usuario);
+                                } else {
+                                    System.out.println("Erro: Curso não encontrado.");
+                                }
+                            } catch (Exception e) {
+                                System.out.println("Erro ao ler curso: " + e.getMessage());
+                            }
+                        } else {
+                            System.out.println("Número de curso inválido!");
+                        }
                     } catch (NumberFormatException e) {
                         System.out.println("Opção inválida!");
                     }
@@ -52,28 +76,99 @@ public class MenuCursos {
     }
 
     /**
-     * Lista todos os cursos do usuário
-     * @param idUsuario ID do usuário
+     * Inicializa cursos de exemplo para demonstração
+     * @param usuario Usuário para o qual criar os cursos
      */
-    private void listarCursos(int idUsuario) {
+    private void inicializarCursosExemplo(Cliente usuario) {
+        try {
+            // Curso 1: Finanças pessoais
+            Curso curso1 = new Curso(
+                -1, // ID será gerado
+                usuario.getId(),
+                "Finanças pessoais",
+                "10/02/2026",
+                "Curso completo sobre gestão financeira pessoal, incluindo orçamento, investimentos e planejamento financeiro.",
+                "", // código será gerado
+                (byte) 0 // Ativo
+            );
+            arqCursos.create(curso1);
+            
+            // Curso 2: Javascript para iniciantes
+            Curso curso2 = new Curso(
+                -1,
+                usuario.getId(),
+                "Javascript para iniciantes",
+                "15/04/2026",
+                "Introdução completa à programação JavaScript, desde conceitos básicos até aplicações web interativas.",
+                "",
+                (byte) 0
+            );
+            arqCursos.create(curso2);
+            
+            // Curso 3: Descubra o Python
+            Curso curso3 = new Curso(
+                -1,
+                usuario.getId(),
+                "Descubra o Python",
+                "20/05/2026",
+                "Este curso intensivo de 5 dias foi projetado para levar iniciantes do zero ao desenvolvimento de scripts funcionais em Python, focando em raciocínio lógico, sintaxe essencial e automação prática. O aluno aprenderá as estruturas básicas do Python; o controle de fluxo e lógica; as coleções e os laços de repetição; as funções e modularização; e a manipulação de arquivos.",
+                "",
+                (byte) 0
+            );
+            arqCursos.create(curso3);
+            
+            System.out.println("Cursos de exemplo criados com sucesso!");
+            
+        } catch (Exception e) {
+            System.out.println("Erro ao criar cursos de exemplo: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Lista todos os cursos do usuário ordenados alfabeticamente por nome
+     * @param idUsuario ID do usuário
+     * @return Array de IDs dos cursos na ordem de exibição
+     */
+    private int[] listarCursos(int idUsuario) {
         System.out.println("\nSEUS CURSOS:");
         System.out.println("-----------");
         try {
             int[] cursosIds = arqCursos.readByUsuario(idUsuario);
             if (cursosIds == null || cursosIds.length == 0) {
                 System.out.println("Você ainda não criou nenhum curso.");
+                return new int[0];
             } else {
-                for (int i = 0; i < cursosIds.length; i++) {
-                    Curso c = arqCursos.read(cursosIds[i]);
+                // Busca todos os cursos e ordena por nome
+                java.util.List<Curso> cursos = new java.util.ArrayList<>();
+                for (int id : cursosIds) {
+                    Curso c = arqCursos.read(id);
                     if (c != null) {
-                        System.out.printf("(%d) %s - %s\n", 
-                            i + 1, c.nome, c.dataInicio);
+                        cursos.add(c);
                     }
                 }
+                
+                // Ordena por nome alfabeticamente
+                cursos.sort((c1, c2) -> c1.nome.compareToIgnoreCase(c2.nome));
+                
+                // Exibe os cursos ordenados
+                for (int i = 0; i < cursos.size(); i++) {
+                    Curso c = cursos.get(i);
+                    System.out.printf("(%d) %s - %s\n", 
+                        i + 1, c.nome, c.dataInicio);
+                }
+                
+                // Retorna os IDs na ordem de exibição
+                int[] idsOrdenados = new int[cursos.size()];
+                for (int i = 0; i < cursos.size(); i++) {
+                    idsOrdenados[i] = cursos.get(i).getId();
+                }
+                
+                return idsOrdenados;
             }
         } catch (Exception e) {
             System.out.println("Erro ao listar cursos!");
             e.printStackTrace();
+            return new int[0];
         }
     }
 
@@ -149,11 +244,13 @@ public class MenuCursos {
     }
 
     /**
-     * Exibe os detalhes completos de um curso
-     * @param curso Curso a ser exibido
+     * Menu de um curso específico
+     * @param curso Curso selecionado
+     * @param usuario Proprietário do curso
      */
-    private void exibirDetalhesCurso(Curso curso) {
-        if (curso != null) {
+    private void menuCurso(Curso curso, Cliente usuario) {
+        String opcao;
+        do {
             System.out.println("\nEntrePares 1.0");
             System.out.println("--------------");
             System.out.println("> Início > Meus Cursos > " + curso.nome);
@@ -163,201 +260,180 @@ public class MenuCursos {
             System.out.printf("DESCRIÇÃO.....: %s%n", curso.descricao);
             System.out.printf("DATA DE INÍCIO: %s%n", curso.dataInicio);
             System.out.println();
-            System.out.println("Este curso " + (curso.estado == 0 ? "está aberto para inscrições!" : "não está em inscrições."));
-        }
+            System.out.println("Este curso " + curso.getStatusExtenso().toLowerCase() + "!");
+
+            System.out.println("\n(A) Gerenciar inscritos no curso");
+            System.out.println("(B) Corrigir dados do curso");
+            System.out.println("(C) Encerrar inscrições");
+            System.out.println("(D) Concluir curso");
+            System.out.println("(E) Cancelar curso");
+            System.out.println("\n(R) Retornar ao menu anterior");
+            System.out.print("\nOpção: ");
+            opcao = console.nextLine().toUpperCase();
+
+            switch (opcao) {
+                case "A":
+                    System.out.println("\n[Indisponível - TP2]");
+                    break;
+                case "B":
+                    editarCurso(curso, usuario);
+                    break;
+                case "C":
+                    encerrarInscricoes(curso, usuario);
+                    break;
+                case "D":
+                    concluirCurso(curso, usuario);
+                    break;
+                case "E":
+                    cancelarCurso(curso, usuario);
+                    break;
+                case "R":
+                    break;
+                default:
+                    System.out.println("Opção inválida!");
+            }
+        } while (!opcao.equals("R"));
     }
 
     /**
      * Permite editar os dados de um curso
+     * @param curso Curso a editar
      * @param usuario Proprietário do curso
      */
-    public void editarCurso(Cliente usuario) {
+    public void editarCurso(Curso curso, Cliente usuario) {
         System.out.println("\nEdição de Curso");
         System.out.println("---------------");
         
-        // Pedir ID do curso
-        System.out.print("ID do curso a editar: ");
-        try {
-            int idCurso = Integer.parseInt(console.nextLine());
-            Curso curso = arqCursos.read(idCurso);
-            
-            if (curso == null) {
-                System.out.println("Curso não encontrado.");
-                return;
-            }
-            
-            if (curso.getIdUsuario() != usuario.getId()) {
-                System.out.println("Você não tem permissão para editar este curso.");
-                return;
-            }
-            
-            exibirDetalhesCurso(curso);
-            
-            // Menu de edição
-            System.out.println("\n(1) Editar nome");
-            System.out.println("(2) Editar data de início");
-            System.out.println("(3) Editar descrição");
-            System.out.println("(0) Cancelar");
-            System.out.print("\nOpção: ");
-            
-            String opcao = console.nextLine();
-            switch (opcao) {
-                case "1":
-                    System.out.print("Novo nome: ");
-                    curso.nome = console.nextLine();
-                    break;
-                case "2":
-                    System.out.print("Nova data (DD/MM/YYYY): ");
-                    String novaData = console.nextLine();
-                    if (validarDataFormatoDDMMAA(novaData)) {
-                        curso.dataInicio = novaData;
-                    } else {
-                        System.out.println("Data inválida!");
-                        return;
-                    }
-                    break;
-                case "3":
-                    System.out.print("Nova descrição: ");
-                    curso.descricao = console.nextLine();
-                    break;
-                case "0":
+        exibirDetalhesCurso(curso);
+        
+        // Menu de edição
+        System.out.println("\n(1) Editar nome");
+        System.out.println("(2) Editar data de início");
+        System.out.println("(3) Editar descrição");
+        System.out.println("(0) Cancelar");
+        System.out.print("\nOpção: ");
+        
+        String opcao = console.nextLine();
+        switch (opcao) {
+            case "1":
+                System.out.print("Novo nome: ");
+                curso.nome = console.nextLine();
+                break;
+            case "2":
+                System.out.print("Nova data (DD/MM/YYYY): ");
+                String novaData = console.nextLine();
+                if (validarDataFormatoDDMMAA(novaData)) {
+                    curso.dataInicio = novaData;
+                } else {
+                    System.out.println("Data inválida!");
                     return;
-            }
-            
-            System.out.print("Confirma as alterações? (S/N): ");
-            if (console.nextLine().toUpperCase().charAt(0) == 'S') {
+                }
+                break;
+            case "3":
+                System.out.print("Nova descrição: ");
+                curso.descricao = console.nextLine();
+                break;
+            case "0":
+                return;
+        }
+        
+        System.out.print("Confirma as alterações? (S/N): ");
+        if (console.nextLine().toUpperCase().charAt(0) == 'S') {
+            try {
                 arqCursos.update(curso);
                 System.out.println("Curso atualizado com sucesso!");
+            } catch (Exception e) {
+                System.out.println("Erro ao atualizar curso!");
+                e.printStackTrace();
             }
-        } catch (Exception e) {
-            System.out.println("Erro ao editar curso!");
-            e.printStackTrace();
         }
     }
 
     /**
      * Encerra inscrições no curso
+     * @param curso Curso a modificar
      * @param usuario Proprietário do curso
      */
-    public void encerrarInscricoes(Cliente usuario) {
+    public void encerrarInscricoes(Curso curso, Cliente usuario) {
         System.out.println("\nEncerrar Inscrições");
         System.out.println("-------------------");
         
-        System.out.print("ID do curso: ");
-        try {
-            int idCurso = Integer.parseInt(console.nextLine());
-            Curso curso = arqCursos.read(idCurso);
-            
-            if (curso == null || curso.getIdUsuario() != usuario.getId()) {
-                System.out.println("Curso não encontrado ou acesso negado.");
-                return;
-            }
-            
-            if (curso.estado == 0) {
+        if (curso.estado == 0) {
+            System.out.print("Confirma encerrar inscrições? (S/N): ");
+            if (console.nextLine().toUpperCase().charAt(0) == 'S') {
                 curso.estado = 1; // Ativo, mas sem novas inscrições
-                arqCursos.update(curso);
-                System.out.println("Inscrições encerradas com sucesso!");
-            } else {
-                System.out.println("Inscrições já estão encerradas.");
+                try {
+                    arqCursos.update(curso);
+                    System.out.println("Inscrições encerradas com sucesso!");
+                } catch (Exception e) {
+                    System.out.println("Erro ao encerrar inscrições!");
+                    e.printStackTrace();
+                }
             }
-        } catch (Exception e) {
-            System.out.println("Erro ao encerrar inscrições!");
-            e.printStackTrace();
+        } else {
+            System.out.println("Este curso já não aceita inscrições.");
         }
     }
 
     /**
      * Marca um curso como concluído
+     * @param curso Curso a modificar
      * @param usuario Proprietário do curso
      */
-    public void concluirCurso(Cliente usuario) {
+    public void concluirCurso(Curso curso, Cliente usuario) {
         System.out.println("\nConcluir Curso");
         System.out.println("--------------");
         
-        System.out.print("ID do curso: ");
-        try {
-            int idCurso = Integer.parseInt(console.nextLine());
-            Curso curso = arqCursos.read(idCurso);
-            
-            if (curso == null || curso.getIdUsuario() != usuario.getId()) {
-                System.out.println("Curso não encontrado ou acesso negado.");
-                return;
-            }
-            
-            System.out.print("Confirma a conclusão do curso? (S/N): ");
-            if (console.nextLine().toUpperCase().charAt(0) == 'S') {
-                curso.estado = 2; // Realizado e concluído
+        System.out.print("Confirma marcar curso como concluído? (S/N): ");
+        if (console.nextLine().toUpperCase().charAt(0) == 'S') {
+            curso.estado = 2; // Concluído
+            try {
                 arqCursos.update(curso);
                 System.out.println("Curso marcado como concluído!");
+            } catch (Exception e) {
+                System.out.println("Erro ao concluir curso!");
+                e.printStackTrace();
             }
-        } catch (Exception e) {
-            System.out.println("Erro ao concluir curso!");
-            e.printStackTrace();
         }
     }
 
     /**
      * Cancela um curso
+     * @param curso Curso a cancelar
      * @param usuario Proprietário do curso
      */
-    public void cancelarCurso(Cliente usuario) {
+    public void cancelarCurso(Curso curso, Cliente usuario) {
         System.out.println("\nCancelar Curso");
         System.out.println("--------------");
         
-        System.out.print("ID do curso: ");
-        try {
-            int idCurso = Integer.parseInt(console.nextLine());
-            Curso curso = arqCursos.read(idCurso);
-            
-            if (curso == null || curso.getIdUsuario() != usuario.getId()) {
-                System.out.println("Curso não encontrado ou acesso negado.");
-                return;
+        // No TP1, não há alunos, então sempre cancela
+        System.out.print("Confirma cancelar o curso? (S/N): ");
+        if (console.nextLine().toUpperCase().charAt(0) == 'S') {
+            try {
+                if (arqCursos.delete(curso.getId())) {
+                    System.out.println("Curso cancelado e excluído!");
+                } else {
+                    System.out.println("Erro ao cancelar curso!");
+                }
+            } catch (Exception e) {
+                System.out.println("Erro ao cancelar curso!");
+                e.printStackTrace();
             }
-            
-            System.out.print("Confirma o cancelamento? (S/N): ");
-            if (console.nextLine().toUpperCase().charAt(0) == 'S') {
-                curso.estado = 3; // Cancelado
-                arqCursos.update(curso);
-                System.out.println("Curso cancelado!");
-            }
-        } catch (Exception e) {
-            System.out.println("Erro ao cancelar curso!");
-            e.printStackTrace();
-        }
     }
+}
 
     /**
-     * Deleta um curso (apenas se não houver inscritos)
-     * @param usuario Proprietário do curso
+     * Exibe os detalhes de um curso
+     * @param curso Curso a ser exibido
      */
-    public void deletarCurso(Cliente usuario) {
-        System.out.println("\nDeletar Curso");
-        System.out.println("-------------");
+    private void exibirDetalhesCurso(Curso curso) {
+        System.out.println("\nCÓDIGO........: " + curso.codigoNanoID);
+        System.out.println("NOME..........: " + curso.nome);
+        System.out.println("DESCRIÇÃO.....: " + curso.descricao);
+        System.out.println("DATA DE INÍCIO: " + curso.dataInicio);
         
-        System.out.print("ID do curso: ");
-        try {
-            int idCurso = Integer.parseInt(console.nextLine());
-            Curso curso = arqCursos.read(idCurso);
-            
-            if (curso == null || curso.getIdUsuario() != usuario.getId()) {
-                System.out.println("Curso não encontrado ou acesso negado.");
-                return;
-            }
-            
-            // Verificação: só permite deletar se não há inscritos (TP2)
-            // Por enquanto, sempre permite
-            System.out.print("Confirma a exclusão? (S/N): ");
-            if (console.nextLine().toUpperCase().charAt(0) == 'S') {
-                if (arqCursos.delete(idCurso)) {
-                    System.out.println("Curso deletado com sucesso!");
-                } else {
-                    System.out.println("Erro ao deletar curso!");
-                }
-            }
-        } catch (Exception e) {
-            System.out.println("Erro ao deletar curso!");
-            e.printStackTrace();
-        }
+        // Mostra o estado do curso
+        System.out.println("\n" + curso.getStatusExtenso() + "!");
     }
 
     /**

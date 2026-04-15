@@ -1,6 +1,6 @@
 package TP1;
 
-import TP1.aed3.Registro;
+import aed3.Registro;
 import java.io.IOException;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;

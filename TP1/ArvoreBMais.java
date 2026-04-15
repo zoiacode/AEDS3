@@ -842,4 +842,12 @@ public class ArvoreBMais<T extends RegistroArvoreBMais<T>> {
         }
     }
 
+    // Fecha o arquivo da árvore B+
+    public void close() throws IOException {
+        if (arquivo != null) {
+            arquivo.close();
+            arquivo = null;
+        }
+    }
+
 }

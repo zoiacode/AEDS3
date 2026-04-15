@@ -8,7 +8,7 @@ conter.
 Implementado pelo Prof. Marcos Kutova
 v1.1 - 2021
 */
-package TP1.aed3;
+package aed3;
 
 import java.io.IOException;
 

@@ -1,13 +1,13 @@
 package TP1;
 
-import TP1.aed3.*;
+import aed3.*;
 import java.util.ArrayList;
 
 /**
  * Gerencia operações CRUD de Curso com índices indiretos
  * Mantém relação 1:N com usuários através da Árvore B+
  */
-public class ArquivoCurso extends TP1.aed3.Arquivo<Curso> {
+public class ArquivoCurso extends aed3.Arquivo<Curso> {
 
     private ArvoreBMais<ParIdId> arvoreCursoUsuario; // Índice 1:N (idUsuario, idCurso)
 

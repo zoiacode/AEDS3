@@ -21,10 +21,11 @@ public class MenuClientes {
         String senha = console.nextLine();
 
         try {
+            email = email.trim();
             // O arqClientes.read deve usar a Tabela Hash para achar o email
-            Cliente c = arqClientes.read(email); 
+            Cliente c = arqClientes.read(email);
 
-            if (c != null && c.senha == String.valueOf(senha.hashCode())) {
+            if (c != null && c.senha.equals(String.valueOf(senha.hashCode()))) {
                 System.out.println("\nLogin efetuado com sucesso!");
                 return c;
             } else {
@@ -134,12 +135,13 @@ public class MenuClientes {
                     System.out.println("Erro: Este e-mail já está cadastrado!");
                     return;
                 }
-                // Use o construtor que ajustamos anteriormente com HASH
-                Cliente c = new Cliente(id, nome, email, senha, perguntaSecreta, respostaSecreta);
+                String senhaHash = String.valueOf(senha.hashCode());
+                Cliente c = new Cliente(id, nome, email, senhaHash, perguntaSecreta, respostaSecreta);
                 arqClientes.create(c);
                 System.out.println("Usuário cadastrado com sucesso!");
-            }catch(Exception e) {
+            } catch(Exception e) {
                 System.out.println("Erro ao salvar.");
+                e.printStackTrace();
             }
         }
     }

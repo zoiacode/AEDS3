@@ -67,10 +67,20 @@ public class Principal {
 
             switch (opcao) {
                 case "A":
-                    (new MenuClientes()).gerenciarDados(usuario);
+                    try {
+                        (new MenuClientes()).gerenciarDados(usuario);
+                    } catch (Exception e) {
+                        System.out.println("Erro ao abrir o menu de dados do cliente.");
+                        e.printStackTrace();
+                    }
                     break;
                 case "B":
-                    (new MenuCursos()).menu(usuario); // Passa o usuário para filtrar os cursos dele
+                    try {
+                        (new MenuCursos()).menu(usuario); // Passa o usuário para filtrar os cursos dele
+                    } catch (Exception e) {
+                        System.out.println("Erro ao abrir o menu de cursos.");
+                        e.printStackTrace();
+                    }
                     break;
                 case "C":
                     System.out.println("\n[Indisponível]");

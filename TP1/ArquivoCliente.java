@@ -1,7 +1,7 @@
 package TP1;
-import TP1.aed3.*;
+import aed3.*;
 
-public class ArquivoCliente extends TP1.aed3.Arquivo<Cliente> {
+public class ArquivoCliente extends aed3.Arquivo<Cliente> {
 
     Arquivo<Cliente> arqClientes;
     HashExtensivel<ParCPFID> indiceIndiretoEmail;

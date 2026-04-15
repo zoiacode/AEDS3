@@ -1,4 +1,4 @@
-package TP1.aed3;
+package aed3;
 
 
 import java.io.IOException;
