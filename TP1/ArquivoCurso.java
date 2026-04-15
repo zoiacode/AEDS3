@@ -1,6 +1,5 @@
 package TP1;
 
-import aed3.*;
 import java.util.ArrayList;
 
 /**
@@ -70,16 +69,15 @@ public class ArquivoCurso extends aed3.Arquivo<Curso> {
      * @return Array de IDs dos cursos
      */
     public int[] readByUsuario(int idUsuario) throws Exception {
-        // Busca na árvore B+ todos os pares que começam com idUsuario
-        // O compareTo em ParIdId compara primeiro por idUsuario
-        ParIdId chave = new ParIdId(idUsuario, 0);
-        ArrayList<ParIdId> pares = arvoreCursoUsuario.read(chave);
+        // O índice da árvore guarda pares (idUsuario, idCurso).
+        // A implementação de busca da árvore atual não suporta diretamente consulta por prefixo,
+        // então lemos todos os pares e filtramos pelo id do usuário.
+        ArrayList<ParIdId> pares = arvoreCursoUsuario.read(null);
         
         if (pares == null || pares.isEmpty()) {
             return null;
         }
         
-        // Extrai apenas os IDs de cursos que pertencem a este usuário
         ArrayList<Integer> cursosIds = new ArrayList<>();
         for (ParIdId par : pares) {
             if (par.getIdUsuario() == idUsuario) {
@@ -91,7 +89,6 @@ public class ArquivoCurso extends aed3.Arquivo<Curso> {
             return null;
         }
         
-        // Converte ArrayList para array primitivo
         int[] resultado = new int[cursosIds.size()];
         for (int i = 0; i < cursosIds.size(); i++) {
             resultado[i] = cursosIds.get(i);

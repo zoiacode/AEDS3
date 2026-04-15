@@ -1,6 +1,4 @@
 package TP1;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
 public class MenuClientes {
@@ -96,7 +94,6 @@ public class MenuClientes {
         String senha = "";
         String perguntaSecreta = "";
         String respostaSecreta = "";
-        boolean dadosCorretos = false;
 
         do {
             System.out.print("\nNome (min. de 4 letras ou vazio para cancelar): ");

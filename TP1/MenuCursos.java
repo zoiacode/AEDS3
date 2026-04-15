@@ -1,7 +1,5 @@
 package TP1;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
 public class MenuCursos {
@@ -18,11 +16,10 @@ public class MenuCursos {
      * @param usuario Cliente logado
      */
     public void menu(Cliente usuario) {
-        // Inicializa cursos de exemplo para o usuário ROBERTO
+        // Inicializa cursos de exemplo para qualquer usuário que ainda não tem cursos.
         try {
-            int[] cursosExistentes = listarCursos(usuario.getId());
-            if (usuario.email.equals("tamoficandovelho@gmail.com") && 
-                (cursosExistentes == null || cursosExistentes.length == 0)) {
+            int[] cursosExistentes = arqCursos.readByUsuario(usuario.getId());
+            if (cursosExistentes == null || cursosExistentes.length == 0) {
                 inicializarCursosExemplo(usuario);
             }
         } catch (Exception e) {
