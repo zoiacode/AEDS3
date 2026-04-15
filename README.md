@@ -128,15 +128,16 @@ Quando um usuário autenticado não possui nenhum curso cadastrado, o sistema cr
 
 ## Como Executar
 
-Compile e execute o projeto a partir do diretório raiz `AEDS3`:
+No Windows PowerShell, navegue até o diretório raiz do projeto `AEDS3` e execute os comandos abaixo:
 
 **1. Compilar:**
-```sh
+```powershell
+cd 'C:\Users\ramle\Documents\TP!AEDS3\AEDS3'
 javac -d .\build TP1\*.java aed3\*.java
 ```
 
 **2. Executar:**
-```sh
+```powershell
 java -cp .\build TP1.Principal
 ```
 
