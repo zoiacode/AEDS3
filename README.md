@@ -171,4 +171,6 @@ java -cp .\build TP1.Principal
 
 ---
 
+**LINK VIDEO DE TESTE DO PROGRAMA:** https://youtu.be/u4ZRTKo4rf4
+
 
