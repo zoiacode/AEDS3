@@ -16,15 +16,15 @@
 
 ## Descrição do Sistema
 
-O sistema implementa um gerenciador de usuários e cursos para o projeto **EntrePares 1.0**, desenvolvido como trabalho prático da disciplina de Algoritmos e Estruturas de Dados III. Trata-se de uma aplicação de console em Java que oferece as seguintes funcionalidades:
+O sistema implementa um gerenciador de usuários e cursos para o projeto **EntrePares 1.0**, desenvolvido como trabalho prático da disciplina de Algoritmos e Estruturas de Dados III. Trata-se de uma aplicação em Java que oferece as seguintes funcionalidades:
 
 - Cadastro e login de usuários com autenticação via e-mail e senha.
-- Manutenção de dados pessoais do cliente (edição de perfil).
 - CRUD completo de cursos vinculados a cada usuário.
 - Navegação por menus interativos no console.
 - Controle de status do curso: **ativo**, **inscrições encerradas**, **concluído** e **cancelado**.
 - Geração automática de código NanoID para cada curso criado.
 - Inicialização automática de cursos de exemplo para usuários sem cursos cadastrados.
+- Exclusão e criação de cursos.
 
 ---
 
@@ -146,7 +146,7 @@ java -cp .\build TP1.Principal
 ## Checklist
 
 1. **Há um CRUD de usuários (que estende a classe ArquivoIndexado, acrescentando Tabelas Hash Extensíveis e Árvores B+ como índices diretos e indiretos conforme necessidade) que funciona corretamente?**
-   - ✅ **Sim.** `ArquivoCliente` implementa o CRUD completo de usuários, estende `aed3.Arquivo` e utiliza `HashExtensivel` como índice direto por e-mail, permitindo busca eficiente na operação de login.
+   - ✅ **Sim.** `ArquivoCliente` implementa o CRUD completo de usuários, estende `aed3.Arquivo` e utiliza `HashExtensivel` como índice direto por e-mail, permitindo busca eficiente na operação de login. Apenas a parte de edição de dados e login está inconstante e não funciona perfeitamente.
 
 2. **Há um CRUD de cursos (que estende a classe ArquivoIndexado, acrescentando Tabelas Hash Extensíveis e Árvores B+ como índices diretos e indiretos conforme necessidade) que funciona corretamente?**
    - ✅ **Sim.** `ArquivoCurso` implementa o CRUD completo de cursos, estende `aed3.Arquivo` e mantém o vínculo com o usuário por meio de `ArvoreBMais<ParIdId>`, suportando as operações de listagem, criação, edição e exclusão de cursos.
@@ -164,7 +164,7 @@ java -cp .\build TP1.Principal
    - ✅ **Sim.** O projeto compila sem erros com o comando `javac` especificado na seção **Como Executar**.
 
 7. **O trabalho está completo e funcionando sem erros de execução?**
-   - ✅ **Sim.** O sistema foi testado e executa corretamente todos os fluxos: tela de login, cadastro de usuário, menu principal, listagem e gestão de cursos, edição de dados e controle de status.
+   - ✅ **Todas as funcionalidades funcionam perfeitamente, menos a alteração de dados de login do usuário** O sistema foi testado e executa corretamente todos os fluxos: tela de login, cadastro de usuário, menu principal, listagem e gestão de cursos (excluir e criar) e controle de status. Edição de dados de login do usuário esta inconstante, as vezes funciona e as vezes não.
 
 8. **O trabalho é original e não a cópia de um trabalho de outro grupo?**
    - ✅ **Sim.** O sistema foi desenvolvido integralmente pelo grupo a partir da especificação da disciplina e das classes base fornecidas, sem cópia de trabalhos de outros grupos.
