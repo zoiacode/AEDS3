@@ -175,6 +175,23 @@ public class Arquivo<T extends Registro> {
         return false;
     }
 
+    public java.util.List<T> readAll() throws Exception {
+        java.util.List<T> resultado = new java.util.ArrayList<>();
+        arquivo.seek(TAM_CABECALHO);
+        while (arquivo.getFilePointer() < arquivo.length()) {
+            byte lapide = arquivo.readByte();
+            short tam = arquivo.readShort();
+            byte[] b = new byte[tam];
+            arquivo.readFully(b);
+            if (lapide == ' ') {
+                T obj = construtor.newInstance();
+                obj.fromByteArray(b);
+                resultado.add(obj);
+            }
+        }
+        return resultado;
+    }
+
     // adiciona um registro à lista de excluídos (espaços disponíveis para reuso)
     public void addDeleted(int tamanhoEspaco, long enderecoEspaco) throws Exception {
         long anterior = 4; // início da lista

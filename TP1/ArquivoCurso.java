@@ -57,9 +57,11 @@ public class ArquivoCurso extends aed3.Arquivo<Curso> {
      * @return Objeto Curso ou null se não encontrado
      */
     public Curso readByCodigo(String codigo) throws Exception {
-        // Como não temos índice direto pelo código, fazemos busca linear
-        // Uma otimização futura seria criar um índice hash para códigos
-        // Por enquanto, usamos uma abordagem simplificada
+        for (Curso c : readAll()) {
+            if (c != null && c.codigoNanoID != null && c.codigoNanoID.equals(codigo)) {
+                return c;
+            }
+        }
         return null;
     }
 

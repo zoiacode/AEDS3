@@ -1,14 +1,22 @@
 package TP1;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class MenuCursos {
     
     private ArquivoCurso arqCursos;
+    private ArquivoCursoUsuario arqInscricoes;
+    private ArquivoCliente arqClientes;
     private static Scanner console = new Scanner(System.in);
 
     public MenuCursos() throws Exception {
         arqCursos = new ArquivoCurso();
+        arqInscricoes = new ArquivoCursoUsuario();
+        arqClientes = new ArquivoCliente();
     }
 
     /**
@@ -270,7 +278,7 @@ public class MenuCursos {
 
             switch (opcao) {
                 case "A":
-                    System.out.println("\n[Indisponível - TP2]");
+                    gerenciarInscritos(curso, usuario);
                     break;
                 case "B":
                     editarCurso(curso, usuario);
@@ -407,8 +415,9 @@ public class MenuCursos {
         System.out.print("Confirma cancelar o curso? (S/N): ");
         if (console.nextLine().toUpperCase().charAt(0) == 'S') {
             try {
-                if (arqCursos.delete(curso.getId())) {
-                    System.out.println("Curso cancelado e excluído!");
+                curso.estado = 3; // Cancelado
+                if (arqCursos.update(curso)) {
+                    System.out.println("Curso cancelado com sucesso!");
                 } else {
                     System.out.println("Erro ao cancelar curso!");
                 }
@@ -416,8 +425,128 @@ public class MenuCursos {
                 System.out.println("Erro ao cancelar curso!");
                 e.printStackTrace();
             }
+        }
     }
-}
+
+    private void gerenciarInscritos(Curso curso, Cliente usuario) {
+        try {
+            int[] inscricoesIds = arqInscricoes.readByCurso(curso.getId());
+            if (inscricoesIds == null || inscricoesIds.length == 0) {
+                System.out.println("\nNenhum inscrito neste curso.");
+                return;
+            }
+
+            List<CursoUsuario> inscricoes = new ArrayList<>();
+            for (int idInscricao : inscricoesIds) {
+                CursoUsuario inscricao = arqInscricoes.read(idInscricao);
+                if (inscricao != null) {
+                    inscricoes.add(inscricao);
+                }
+            }
+
+            boolean sair = false;
+            while (!sair) {
+                System.out.println("\nEntrePares 1.0");
+                System.out.println("--------------");
+                System.out.println("> Início > Meus Cursos > " + curso.nome + " > Inscrições");
+                System.out.println();
+
+                for (int i = 0; i < inscricoes.size(); i++) {
+                    CursoUsuario inscricao = inscricoes.get(i);
+                    Cliente aluno = arqClientes.read(inscricao.getIdUsuario());
+                    if (aluno != null) {
+                        System.out.printf("(%d) %s (%s)\n", i + 1, aluno.nome, inscricao.dataInscricao);
+                    }
+                }
+
+                System.out.println();
+                System.out.println("(A) Exportar lista");
+                System.out.println("\n(R) Retornar ao menu anterior");
+                System.out.print("\nOpção: ");
+                String opcao = console.nextLine().toUpperCase();
+
+                if (opcao.equals("A")) {
+                    exportarListaInscritos(curso, inscricoes);
+                } else if (opcao.equals("R")) {
+                    sair = true;
+                } else {
+                    try {
+                        int escolha = Integer.parseInt(opcao);
+                        if (escolha >= 1 && escolha <= inscricoes.size()) {
+                            CursoUsuario inscricao = inscricoes.get(escolha - 1);
+                            Cliente aluno = arqClientes.read(inscricao.getIdUsuario());
+                            if (aluno != null) {
+                                menuDetalhesInscrito(curso, inscricao, aluno);
+                                inscricoes = new ArrayList<>();
+                                int[] idsAtualizados = arqInscricoes.readByCurso(curso.getId());
+                                if (idsAtualizados != null) {
+                                    for (int idInscricao : idsAtualizados) {
+                                        CursoUsuario inscricaoAtual = arqInscricoes.read(idInscricao);
+                                        if (inscricaoAtual != null) {
+                                            inscricoes.add(inscricaoAtual);
+                                        }
+                                    }
+                                }
+                            }
+                        } else {
+                            System.out.println("Número inválido!");
+                        }
+                    } catch (NumberFormatException e) {
+                        System.out.println("Opção inválida!");
+                    }
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Erro ao gerenciar inscritos: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    private void exportarListaInscritos(Curso curso, List<CursoUsuario> inscricoes) {
+        try {
+            File pasta = new File(".\\dados\\cursoUsuario");
+            if (!pasta.exists()) {
+                pasta.mkdirs();
+            }
+            File arquivoCSV = new File(pasta, "inscritos-" + curso.codigoNanoID + ".csv");
+            try (FileWriter writer = new FileWriter(arquivoCSV)) {
+                writer.write("nome,email\n");
+                for (CursoUsuario inscricao : inscricoes) {
+                    Cliente aluno = arqClientes.read(inscricao.getIdUsuario());
+                    if (aluno != null) {
+                        writer.write(aluno.nome.replace("\n", " ") + "," + aluno.email.replace("\n", " ") + "\n");
+                    }
+                }
+            }
+            System.out.println("Lista exportada para: " + arquivoCSV.getAbsolutePath());
+        } catch (Exception e) {
+            System.out.println("Erro ao exportar lista: " + e.getMessage());
+        }
+    }
+
+    private void menuDetalhesInscrito(Curso curso, CursoUsuario inscricao, Cliente aluno) {
+        System.out.println("\nEntrePares 1.0");
+        System.out.println("--------------");
+        System.out.println("> Início > Meus Cursos > " + curso.nome + " > Inscrições > " + aluno.nome);
+        System.out.println();
+        System.out.printf("NOME......: %s%n", aluno.nome);
+        System.out.printf("EMAIL.....: %s%n", aluno.email);
+        System.out.printf("INSCRIÇÃO.: %s%n", inscricao.dataInscricao);
+        System.out.println();
+        System.out.println("(A) Cancelar inscrição");
+        System.out.println("\n(R) Retornar ao menu anterior");
+        System.out.print("\nOpção: ");
+        String opcao = console.nextLine().toUpperCase();
+
+        if (opcao.equals("A")) {
+            try {
+                arqInscricoes.delete(inscricao.getId());
+                System.out.println("Inscrição cancelada com sucesso!");
+            } catch (Exception e) {
+                System.out.println("Erro ao cancelar inscrição: " + e.getMessage());
+            }
+        }
+    }
 
     /**
      * Exibe os detalhes de um curso

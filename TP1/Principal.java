@@ -83,7 +83,12 @@ public class Principal {
                     }
                     break;
                 case "C":
-                    System.out.println("\n[Indisponível]");
+                    try {
+                        (new MenuInscricoes()).menu(usuario);
+                    } catch (Exception e) {
+                        System.out.println("Erro ao abrir o menu de inscrições.");
+                        e.printStackTrace();
+                    }
                     break;
                 case "S":
                     System.out.println("Fazendo logout...");
