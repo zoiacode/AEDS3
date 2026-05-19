@@ -1,7 +1,5 @@
 package TP1;
 
-import java.io.File;
-import java.io.FileWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -282,6 +280,14 @@ public class MenuInscricoes {
     }
 
     private String getAutorDoCurso(Curso curso) {
+        try {
+            Cliente autor = arqClientes.read(curso.getIdUsuario());
+            if (autor != null) {
+                return autor.nome;
+            }
+        } catch (Exception e) {
+            // Ignora erro e retorna padrão
+        }
         return "Não disponível";
     }
 

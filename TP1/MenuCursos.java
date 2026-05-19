@@ -24,16 +24,6 @@ public class MenuCursos {
      * @param usuario Cliente logado
      */
     public void menu(Cliente usuario) {
-        // Inicializa cursos de exemplo para qualquer usuário que ainda não tem cursos.
-        try {
-            int[] cursosExistentes = arqCursos.readByUsuario(usuario.getId());
-            if (cursosExistentes == null || cursosExistentes.length == 0) {
-                inicializarCursosExemplo(usuario);
-            }
-        } catch (Exception e) {
-            // Ignora erro na verificação inicial
-        }
-        
         String opcao;
         do {
             System.out.println("\nEntrePares 1.0");
@@ -78,55 +68,6 @@ public class MenuCursos {
                     }
             }
         } while (!opcao.equals("R"));
-    }
-
-    /**
-     * Inicializa cursos de exemplo para demonstração
-     * @param usuario Usuário para o qual criar os cursos
-     */
-    private void inicializarCursosExemplo(Cliente usuario) {
-        try {
-            // Curso 1: Finanças pessoais
-            Curso curso1 = new Curso(
-                -1, // ID será gerado
-                usuario.getId(),
-                "Finanças pessoais",
-                "10/02/2026",
-                "Curso completo sobre gestão financeira pessoal, incluindo orçamento, investimentos e planejamento financeiro.",
-                "", // código será gerado
-                (byte) 0 // Ativo
-            );
-            arqCursos.create(curso1);
-            
-            // Curso 2: Javascript para iniciantes
-            Curso curso2 = new Curso(
-                -1,
-                usuario.getId(),
-                "Javascript para iniciantes",
-                "15/04/2026",
-                "Introdução completa à programação JavaScript, desde conceitos básicos até aplicações web interativas.",
-                "",
-                (byte) 0
-            );
-            arqCursos.create(curso2);
-            
-            // Curso 3: Descubra o Python
-            Curso curso3 = new Curso(
-                -1,
-                usuario.getId(),
-                "Descubra o Python",
-                "20/05/2026",
-                "Este curso intensivo de 5 dias foi projetado para levar iniciantes do zero ao desenvolvimento de scripts funcionais em Python, focando em raciocínio lógico, sintaxe essencial e automação prática. O aluno aprenderá as estruturas básicas do Python; o controle de fluxo e lógica; as coleções e os laços de repetição; as funções e modularização; e a manipulação de arquivos.",
-                "",
-                (byte) 0
-            );
-            arqCursos.create(curso3);
-            
-            System.out.println("Cursos de exemplo criados com sucesso!");
-            
-        } catch (Exception e) {
-            System.out.println("Erro ao criar cursos de exemplo: " + e.getMessage());
-        }
     }
 
     /**

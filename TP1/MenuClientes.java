@@ -35,6 +35,47 @@ public class MenuClientes {
         return null;
     }
 
+    public void recuperarSenha() {
+        System.out.println("\nRECUPERAÇÃO DE SENHA");
+        System.out.println("----------------------");
+        System.out.print("Email: ");
+        String email = console.nextLine();
+
+        try {
+            Cliente c = arqClientes.read(email.trim());
+            if (c == null) {
+                System.out.println("Usuário não encontrado.");
+                return;
+            }
+
+            System.out.println("Pergunta secreta: " + c.getPerguntaSecreta());
+            System.out.print("Resposta: ");
+            String resposta = console.nextLine();
+
+            if (!c.respostaSecreta.equals(resposta)) {
+                System.out.println("Resposta incorreta.");
+                return;
+            }
+
+            System.out.print("Nova senha: ");
+            String novaSenha = console.nextLine();
+            if (novaSenha.isEmpty()) {
+                System.out.println("Senha não pode ser vazia.");
+                return;
+            }
+
+            c.senha = String.valueOf(novaSenha.hashCode());
+            if (arqClientes.update(c)) {
+                System.out.println("Senha alterada com sucesso.");
+            } else {
+                System.out.println("Não foi possível atualizar a senha.");
+            }
+        } catch (Exception e) {
+            System.out.println("Erro ao recuperar senha.");
+            e.printStackTrace();
+        }
+    }
+
     public void gerenciarDados(Cliente logado) {
         System.out.println("\n> Início > Meus Dados");
         mostraCliente(logado);
@@ -145,61 +186,53 @@ public class MenuClientes {
 
     public void alterarDadosLogado(Cliente logado) {
         System.out.println("\nAlteração de cliente");
-        String email = logado.email;
-        boolean emailValido = false;
+        System.out.println("Dados atuais:");
+        mostraCliente(logado);
 
-        do {
-            System.out.print("\nEmail: ");
-            email = console.nextLine();  // Lê o email digitado pelo usuário
-
-            if(email.isEmpty())
-                return; 
-
-            // Validação do email (formato básico)
-            if (email.contains("@") && email.contains(".")) {
-                emailValido = true;  // Email válido
-            } else {
-                System.out.println("Email inválido. O email deve conter '@' e '.']");
+        System.out.print("\nNovo nome (deixe em branco para manter): ");
+        String novoNome = console.nextLine();
+        if (!novoNome.isEmpty()) {
+            if (novoNome.length() < 4) {
+                System.out.println("O nome deve ter no mínimo 4 caracteres.");
+                return;
             }
-        } while (!emailValido);
-
-
-        try {
-            // Tenta ler o cliente com o ID fornecido
-            Cliente cliente = arqClientes.read(email);
-            if (cliente != null) {
-                System.out.println("Cliente encontrado:");
-                mostraCliente(cliente);  // Exibe os dados do cliente para confirmação
-
-                // Alteração de email
-                System.out.print("\nNovo email (deixe em branco para manter o anterior): ");
-                String novoEmail = console.nextLine();
-                if (!novoEmail.isEmpty()) {
-                    cliente.email = novoEmail;  // Atualiza o email se fornecido
-                }
-
-                // Confirmação da alteração
-                System.out.print("\nConfirma as alterações? (S/N) ");
-                char resp = console.next().charAt(0);
-                if (resp == 'S' || resp == 's') {
-                    // Salva as alterações no arquivo
-                    boolean alterado = arqClientes.update(cliente);
-                    if (alterado) {
-                        System.out.println("Cliente alterado com sucesso.");
-                    } else {
-                        System.out.println("Erro ao alterar o cliente.");
-                    }
-                } else {
-                    System.out.println("Alterações canceladas.");
-                }
-            } else {
-                System.out.println("Cliente não encontrado.");
-            }
-        } catch (Exception e) {
-            System.out.println("Erro do sistema. Não foi possível alterar o cliente!");
-            e.printStackTrace();
+            logado.nome = novoNome;
         }
-        
+
+        System.out.print("Nova senha (deixe em branco para manter): ");
+        String novaSenha = console.nextLine();
+        if (!novaSenha.isEmpty()) {
+            logado.senha = String.valueOf(novaSenha.hashCode());
+        }
+
+        System.out.print("Nova pergunta secreta (deixe em branco para manter): ");
+        String novaPergunta = console.nextLine();
+        if (!novaPergunta.isEmpty()) {
+            logado.perguntaSecreta = novaPergunta;
+        }
+
+        System.out.print("Nova resposta secreta (deixe em branco para manter): ");
+        String novaResposta = console.nextLine();
+        if (!novaResposta.isEmpty()) {
+            logado.respostaSecreta = novaResposta;
+        }
+
+        System.out.print("\nConfirma as alterações? (S/N) ");
+        String resp = console.nextLine().trim().toUpperCase();
+        if (resp.equals("S")) {
+            try {
+                if (arqClientes.update(logado)) {
+                    System.out.println("Cliente alterado com sucesso.");
+                } else {
+                    System.out.println("Erro ao alterar o cliente.");
+                }
+            } catch (Exception e) {
+                System.out.println("Erro do sistema. Não foi possível alterar o cliente!");
+                e.printStackTrace();
+            }
+        } else {
+            System.out.println("Alterações canceladas.");
+        }
     }
 
 

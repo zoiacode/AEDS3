@@ -18,6 +18,7 @@ public class Principal {
                 System.out.println("> Início");
                 System.out.println("\n(A) Login");
                 System.out.println("(B) Novo usuário");
+                System.out.println("(C) Recuperar senha");
                 System.out.println("\n(S) Sair");
 
                 System.out.print("\nOpção: ");
@@ -33,6 +34,9 @@ public class Principal {
                         break;
                     case "B":
                         (new MenuClientes()).incluirCliente();
+                        break;
+                    case "C":
+                        (new MenuClientes()).recuperarSenha();
                         break;
                     case "S":
                         System.out.println("Encerrando o sistema...");
