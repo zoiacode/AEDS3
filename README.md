@@ -36,6 +36,8 @@ Ao iniciar o sistema, o usuário é apresentado a um menu com as opções de **l
 
 ![alt text](./Imagens/image1.png)
 
+**PRINT (substituir imagem):** Colocar aqui o screenshot real da Tela Inicial (Login/Cadastro). Arquivo sugerido: ./Imagens/image1.png.
+
 ---
 
 ### Menu Principal (pós-login)
@@ -43,6 +45,8 @@ Ao iniciar o sistema, o usuário é apresentado a um menu com as opções de **l
 Após autenticação bem-sucedida, o usuário acessa o menu principal com três opções: **Meus Dados**, **Meus Cursos** e **Minhas Inscrições**.
 
 ![alt text](./Imagens/image2.png)
+
+**PRINT (substituir imagem):** Colocar aqui o screenshot real do Menu Principal (pós-login). Arquivo sugerido: ./Imagens/image2.png.
 
 ---
 
@@ -52,6 +56,8 @@ Permite ao usuário visualizar e editar suas informações pessoais (nome e e-ma
 
 ![alt text](./Imagens/image3.png)
 
+**PRINT (substituir imagem):** Colocar aqui o screenshot da tela "Meus Dados" (visualização/edição). Arquivo sugerido: ./Imagens/image3.png.
+
 ---
 
 ### Tela Meus Cursos
@@ -59,6 +65,8 @@ Permite ao usuário visualizar e editar suas informações pessoais (nome e e-ma
 Exibe a lista numerada dos cursos cadastrados pelo usuário autenticado, ordenados **alfabeticamente**. Cada item mostra o nome do curso e a data de início. A partir desta tela é possível acessar os detalhes de um curso ou criar um novo.
 
 ![alt text](./Imagens/image4.png)
+
+**PRINT (substituir imagem):** Colocar aqui o screenshot da lista "Meus Cursos" (ordem alfabética). Arquivo sugerido: ./Imagens/image4.png.
 
 ---
 
@@ -68,6 +76,8 @@ Apresenta todas as informações de um curso selecionado: **código NanoID**, no
 
 ![alt text](./Imagens/image5.png)
 
+**PRINT (substituir imagem):** Colocar aqui o screenshot da Tela de Detalhes do Curso (mostrando NanoID e ações). Arquivo sugerido: ./Imagens/image5.png.
+
 ---
 
 ### Tela de Criação de Curso
@@ -76,7 +86,44 @@ Formulário de cadastro de um novo curso, onde o usuário informa nome, descriç
 
 ![alt text](./Imagens/image6.png)
 
+**PRINT (substituir imagem):** Colocar aqui o screenshot do formulário de Criação de Curso. Arquivo sugerido: ./Imagens/image6.png.
+
 ---
+
+### Telas Específicas das Novas Funcionalidades (capturas solicitadas)
+
+Para facilitar a correção, capturem e coloquem as imagens reais nos caminhos sugeridos abaixo.
+
+- **Busca por NanoID**
+
+   - Descrição: Tela onde o usuário insere um código NanoID (que já possui) para localizar um curso de outro usuário.
+   - PRINT (substituir imagem): colocar screenshot da tela de busca por NanoID. Arquivo sugerido: ./Imagens/busca_nanoid.png
+
+- **Lista completa de cursos (paginação 10 em 10)**
+
+   - Descrição: Tela que exibe a listagem completa de cursos do sistema com paginação de 10 itens por página.
+   - PRINT (substituir imagem): colocar screenshot mostrando a paginação (página 1). Arquivo sugerido: ./Imagens/cursos_paginacao.png
+
+- **Visão de Inscrições (usuário)**
+
+   - Descrição: Tela em `MenuInscricoes` onde o usuário visualiza todos os cursos em que está inscrito e acessa detalhes para cancelar ou ver status.
+   - PRINT (substituir imagem): colocar screenshot da lista de inscrições do usuário. Arquivo sugerido: ./Imagens/inscricoes_usuario.png
+
+- **Visão de Gestão de Inscritos (proponente do curso)**
+
+   - Descrição: Tela em `MenuCursos -> Gerenciar inscritos` onde o proponente do curso pode ver a lista de inscritos e exportar/gerir cada inscrição.
+   - PRINT (substituir imagem): colocar screenshot da gestão de inscritos (lista + opção exportar). Arquivo sugerido: ./Imagens/gestao_inscritos.png
+
+- **CRUD de Inscrições**
+
+   - Descrição: Conjunto de telas que demonstram a criação (inscrição), leitura (lista/visualização), e exclusão (cancelamento) de inscrições.
+   - PRINT (substituir imagem): colocar screenshots representando criação e cancelamento de inscrição. Arquivo sugerido: ./Imagens/crud_inscricoes.png
+
+- **Tela de Inscrição (ação do usuário)**
+
+   - Descrição: Tela de confirmação usada quando o usuário decide se inscrever em um curso específico (mostrando botão/linha de confirmação e data de inscrição).
+   - PRINT (substituir imagem): colocar screenshot da tela de confirmação de inscrição. Arquivo sugerido: ./Imagens/tela_inscricao.png
+
 
 ## Classes Criadas
 

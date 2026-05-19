@@ -181,7 +181,7 @@ public class MenuCursos {
                 );
                 
                 int id = arqCursos.create(novoCurso);
-                System.out.println("\nCurso criado com sucesso! ID: " + id);
+                System.out.println("\nCurso criado com sucesso! Código NanoID: " + novoCurso.codigoNanoID);
             } catch (Exception e) {
                 System.out.println("Erro ao criar curso!");
                 e.printStackTrace();
