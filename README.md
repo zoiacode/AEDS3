@@ -36,7 +36,7 @@ Ao iniciar o sistema, o usuário é apresentado a um menu com as opções de **l
 
 ![alt text](./Imagens/image1.png)
 
-**PRINT (substituir imagem):** Colocar aqui o screenshot real da Tela Inicial (Login/Cadastro). Arquivo sugerido: ./Imagens/image1.png.
+
 
 ---
 
@@ -46,7 +46,7 @@ Após autenticação bem-sucedida, o usuário acessa o menu principal com três 
 
 ![alt text](./Imagens/image2.png)
 
-**PRINT (substituir imagem):** Colocar aqui o screenshot real do Menu Principal (pós-login). Arquivo sugerido: ./Imagens/image2.png.
+
 
 ---
 
@@ -56,7 +56,7 @@ Permite ao usuário visualizar e editar suas informações pessoais (nome e e-ma
 
 ![alt text](./Imagens/image3.png)
 
-**PRINT (substituir imagem):** Colocar aqui o screenshot da tela "Meus Dados" (visualização/edição). Arquivo sugerido: ./Imagens/image3.png.
+
 
 ---
 
@@ -67,7 +67,7 @@ E também o Formulário de cadastro de um novo curso, onde o usuário informa no
 
 ![alt text](./Imagens/image4.png)
 
-**PRINT (substituir imagem):** Colocar aqui o screenshot da lista "Meus Cursos" (ordem alfabética). Arquivo sugerido: ./Imagens/image4.png.
+
 
 ---
 
@@ -77,7 +77,7 @@ Apresenta todas as informações de um curso selecionado: **código NanoID**, no
 
 ![alt text](./Imagens/image5.png)
 
-**PRINT (substituir imagem):** Colocar aqui o screenshot da Tela de Detalhes do Curso (mostrando NanoID e ações). Arquivo sugerido: ./Imagens/image5.png.
+
 
 ---
 
