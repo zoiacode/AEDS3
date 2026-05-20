@@ -156,6 +156,27 @@ Ao criar um novo curso, o sistema invoca `NanoID.generate()` para produzir um c�
 
 Cada curso possui um atributo de status com quatro estados possíveis: **Ativo**, **Inscrições Encerradas**, **Concluído** e **Cancelado**. As transições de estado são realizadas pelas ações disponíveis na tela de detalhes e persistidas no arquivo binário de cursos.
 
+### Busca de Cursos por NanoID
+
+A funcionalidade de busca por NanoID permite localizar cursos criados por outros usuários usando um código externo que o usuário já possui. Essa busca abre a visualização do curso encontrado sem expor o ID interno do registro.
+
+### Lista Completa de Cursos com Paginação
+
+O sistema implementa a listagem completa de cursos com paginação de 10 em 10 itens. Isso facilita a navegação quando há muitos cursos cadastrados e melhora a usabilidade no console.
+
+### Relacionamento N:N com CursoUsuario e Árvores B+
+
+Foi implementado o relacionamento N:N entre cursos e usuários por meio da entidade de associação `CursoUsuario`, complementado por duas árvores B+ (`arvoreUsuarioInscricao` e `arvoreCursoInscricao`). Isso garante consultas eficientes por usuário e por curso.
+
+
+### Visão de Inscrições e Gestão de Inscritos
+
+A visão de inscrições (`MenuInscricoes`) permite ao usuário ver todos os cursos em que está inscrito. O proponente do curso também consegue gerir seus inscritos a partir do menu de cursos, incluindo exportação da lista e cancelamento individual.
+
+### Integridade de Dados entre Entidades
+
+A integridade de dados entre `Cliente`, `Curso` e `CursoUsuario` é assegurada pela manutenção consistente de chaves e índices em disco, evitando registros órfãos e garantindo que as associações reflitam corretamente o estado atual dos cursos e das inscrições.
+
 
 ## Como Executar
 
@@ -163,7 +184,7 @@ No Windows PowerShell, navegue até o diretório raiz do projeto `AEDS3` e execu
 
 **1. Compilar:**
 ```powershell
-cd 'C:\Users\ramle\Documents\TP!AEDS3\AEDS3'
+cd na pasta do repositorio
 javac -d .\build TP1\*.java aed3\*.java
 ```
 
