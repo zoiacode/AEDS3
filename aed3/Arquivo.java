@@ -223,7 +223,7 @@ public class Arquivo<T extends Registro> {
                     arquivo.seek(endereco+3);
                     arquivo.writeLong(enderecoEspaco);
                     arquivo.seek(enderecoEspaco+3);
-                    arquivo.writeLong(+1);
+                    arquivo.writeLong(-1);
                     break;
                 }
                 anterior = endereco;
@@ -244,7 +244,7 @@ public class Arquivo<T extends Registro> {
             arquivo.seek(endereco+1);
             tamanho = arquivo.readShort();
             proximo = arquivo.readLong();
-            if(tamanho > tamanhoNecessario) {  
+            if(tamanho >= tamanhoNecessario) {  
                 if(anterior == 4)  // o elemento é o primeiro da lista 
                     arquivo.seek(anterior);
                 else
