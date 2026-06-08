@@ -30,6 +30,8 @@ O sistema implementa um gerenciador de usuários e cursos para o projeto **Entre
 
 ## Telas do Sistema
 
+### TP1 — Telas principais
+
 ### Tela Inicial — Login e Cadastro
 
 Ao iniciar o sistema, o usuário é apresentado a um menu com as opções de **login** (para usuários já cadastrados) e **cadastro** (para novos usuários). O login é realizado por e-mail e senha, com validação via índice hash extensível.
@@ -81,7 +83,7 @@ Apresenta todas as informações de um curso selecionado: **código NanoID**, no
 
 ---
 
-### Telas Específicas das Novas Funcionalidades (capturas solicitadas)
+### TP2 — Telas de inscrições e gestão de inscritos
 
 Para facilitar a correção, capturem e coloquem as imagens reais nos caminhos sugeridos abaixo.
 
@@ -104,124 +106,254 @@ Para facilitar a correção, capturem e coloquem as imagens reais nos caminhos s
 
 
 
+## Estrutura de Arquivos do Repositório
+
+A estrutura atual do repositório está listada abaixo, incluindo código-fonte, dados persistidos, binários compilados e recursos de imagens.
+
+- .gitattributes
+- LICENSE
+- README.md
+- bin/
+  - src/
+    - core/
+      - ArvoreBMais.class
+      - ArvoreBMais$Pagina.class
+      - NanoId.class
+      - Principal.class
+      - RegistroArvoreBMais.class
+    - cursos/
+      - ArquivoCurso.class
+      - Curso.class
+      - MenuCursos.class
+      - ParUsuarioCurso.class
+    - infraestrutura/
+      - ArquivoIndexado.class
+      - HashExtensivel.class
+      - HashExtensivel$Cesto.class
+      - HashExtensivel$Diretorio.class
+      - ParIdEndereco.class
+      - RegistroHashExtensivel.class
+      - RegistroPersistente.class
+    - inscricoes/
+      - ArquivoInscricao.class
+      - Inscricao.class
+      - MenuInscricoes.class
+      - ParIntInt.class
+    - usuarios/
+      - ArquivoUsuario.class
+      - MenuUsuarios.class
+      - ParEmailId.class
+      - Usuario.class
+- dados/
+  - clientes/
+    - clientes.c.db
+    - clientes.d.db
+    - clientes.db
+    - indiceEmail.c.db
+    - indiceEmail.d.db
+  - cursos/
+    - cursos.c.db
+    - cursos.d.db
+    - cursos.db
+    - relacao.b.db
+  - cursoUsuario/
+    - cursoInscricao.b.db
+    - cursoUsuario.b.db
+    - cursoUsuario.c.db
+    - cursoUsuario.d.db
+    - usuarioInscricao.b.db
+- Imagens/
+  - image1.png
+  - image2.png
+  - image3.png
+  - image4.png
+  - image5.png
+  - image6.png
+  - image7.png
+  - image8.png
+  - image9.png
+- src/
+  - core/
+    - ArvoreBMais.java
+    - NanoId.java
+    - Principal.java
+    - RegistroArvoreBMais.java
+  - cursos/
+    - ArquivoCurso.java
+    - Curso.java
+    - MenuCursos.java
+    - ParUsuarioCurso.java
+  - infraestrutura/
+    - ArquivoIndexado.java
+    - HashExtensivel.java
+    - ParIdEndereco.java
+    - RegistroHashExtensivel.java
+    - RegistroPersistente.java
+  - inscricoes/
+    - ArquivoInscricao.java
+    - Inscricao.java
+    - MenuInscricoes.java
+    - ParIntInt.java
+  - usuarios/
+    - ArquivoUsuario.java
+    - MenuUsuarios.java
+    - ParEmailId.java
+    - Usuario.java
+
 ## Classes Criadas
 
-O projeto está organizado em dois pacotes: **TP1** (lógica de negócio e menus) e **aed3** (estruturas de dados genéricas).
+- src.core.ArvoreBMais
+- src.core.NanoId
+- src.core.Principal
+- src.core.RegistroArvoreBMais
+- src.cursos.ArquivoCurso
+- src.cursos.Curso
+- src.cursos.MenuCursos
+- src.cursos.ParUsuarioCurso
+- src.infraestrutura.ArquivoIndexado
+- src.infraestrutura.HashExtensivel
+- src.infraestrutura.ParIdEndereco
+- src.infraestrutura.RegistroHashExtensivel
+- src.infraestrutura.RegistroPersistente
+- src.inscricoes.ArquivoInscricao
+- src.inscricoes.Inscricao
+- src.inscricoes.MenuInscricoes
+- src.inscricoes.ParIntInt
+- src.usuarios.ArquivoUsuario
+- src.usuarios.MenuUsuarios
+- src.usuarios.ParEmailId
+- src.usuarios.Usuario
+
+## Estrutura do Projeto Atual
+
+O código atual está organizado em cinco pacotes dentro da pasta `src`: `src.core`, `src.usuarios`, `src.cursos`, `src.inscricoes` e `src.infraestrutura`. O diretório `bin` contém os arquivos compilados.
+
+## Implementação do TP1
+
+### O acesso ao sistema
+- Tela de login por e-mail e senha.
+- Cadastro de novo usuário com validação de e-mail único.
+- Recuperação de senha por pergunta secreta.
+- Busca de usuário por e-mail usando índice direto em `HashExtensivel`.
+
+### A entidade Usuário
+- Campos implementados: `id`, `nome`, `email`, `senha`, `perguntaSecreta`, `respostaSecreta`.
+- O ID é sequencial e serve como identificador único interno.
+- O e-mail é usado como chave de busca principal.
+- A senha é armazenada como `hashCode()` na criação/alteração.
+
+### A entidade Curso
+- Cada curso pertence a um único usuário (`idUsuario`).
+- Um usuário pode ter vários cursos (relação 1:N).
+- Campos implementados: `id`, `nome`, `descricao`, `dataInicio`, `codigoNanoID`, `estado`, `idUsuario`.
+- `codigoNanoID` é gerado automaticamente via `NanoId.generate()` e é distinto do ID interno.
+- Estados implementados: `0` (ativo com inscrições abertas), `1` (inscrições encerradas), `2` (realizado), `3` (cancelado).
+
+### Funcionalidades de TP1 implementadas
+- Cadastro, login, alteração e exclusão de usuário.
+- Recuperação de senha via pergunta secreta.
+- CRUD de cursos com criação, leitura, atualização e exclusão.
+- Listagem de cursos por usuário, ordenada alfabeticamente.
+- Gestão de estado de curso: encerrar inscrições, concluir e cancelar.
+- Relacionamento 1:N entre usuário e curso usando `ArvoreBMais<ParUsuarioCurso>`.
+
+## Implementação do TP2
+
+### Busca e inscrições
+- Menu de inscrições com listagem das inscrições do usuário ativo.
+- Busca por curso usando código NanoID.
+- Listagem de todos os cursos com paginação de 10 itens por página.
+- Inscrição em curso aberto e cancelamento de inscrição pelo usuário.
+- Busca por palavras-chave ainda não implementada; placeholder para TP3.
+
+### Relacionamento N:N e persistência
+- A entidade `Inscricao` representa a associação entre usuário e curso.
+- `ArquivoInscricao` mantém os registros de inscrição.
+- Duas árvores B+ suportam o relacionamento N:N:
+  - `arvoreUsuarioInscricao` para (idUsuario, idInscricao).
+  - `arvoreCursoInscricao` para (idCurso, idInscricao).
+- A implementação permite consultar cursos de um usuário e inscritos de um curso.
+
+### Gestão de inscritos
+- `MenuCursos` permite visualizar inscritos em um curso criado pelo usuário.
+- Exporta a lista de inscritos para CSV.
+- Permite cancelar inscrição de um usuário inscrito.
+
+## Principais classes atuais
 
 | Classe | Descrição |
 |--------|-----------|
-| `TP1.Principal` | Ponto de entrada da aplicação. Inicializa os arquivos e exibe o menu principal após autenticação. |
-| `TP1.MenuClientes` | Gerencia as telas de cadastro, login e edição de dados do cliente (Meus Dados). |
-| `TP1.MenuCursos` | Controla a exibição dos cursos do usuário, criação de cursos e operações sobre cada curso. |
-| `TP1.MenuInscricoes` | Gerencia a visualização de inscrições, busca por NanoID, inscrição e cancelamento de cursos. |
-| `TP1.ArquivoCliente` | CRUD de usuários. Estende `aed3.Arquivo` e usa `HashExtensivel` como índice direto por e-mail. |
-| `TP1.ArquivoCurso` | CRUD de cursos. Estende `aed3.Arquivo` e usa `ArvoreBMais` para o relacionamento 1:N com usuários. |
-| `TP1.ArquivoCursoUsuario` | CRUD da entidade de associação `CursoUsuario`, com índices B+ para consulta por usuário e por curso. |
-| `TP1.Cliente` | Entidade usuário com serialização binária via `toByteArray()` / `fromByteArray()`. |
-| `TP1.Curso` | Entidade curso com serialização binária, NanoID e controle de status. |
-| `TP1.CursoUsuario` | Entidade de associação N:N entre curso e usuário, usada para gerenciar inscrições. |
-| `TP1.NanoID` | Gerador de código NanoID para identificação externa de cursos. |
-| `TP1.ParIdId` | Par de chaves `(idUsuario, idCurso)` usado como chave composta na árvore B+. |
-| `TP1.ParInteiroInteiro` | Par de inteiros usado como chave nas árvores B+ de inscrições. |
-| `TP1.ParCPFID` | Par de chaves CPF/ID usado em funcionalidades de relacionamento e buscas internas. |
-| `TP1.RegistroArvoreBMais` | Interface/entidade base usada pela implementação genérica da árvore B+. |
-| `TP1.ArvoreBMais` | Implementação da árvore B+ genérica para armazenar o relacionamento 1:N entre usuários e cursos. |
-| `aed3.Arquivo` | Classe base genérica de arquivo indexado com suporte a CRUD. |
-| `aed3.HashExtensivel` | Tabela hash extensível utilizada como índice direto de e-mail em `ArquivoCliente`. |
-| `aed3.Registro` | Classe base de registro serializável usada por `aed3.Arquivo`. |
-| `aed3.RegistroHashExtensivel` | Registro usado internamente pelo índice hash extensível. |
-| `aed3.ParIDEndereco` | Par de chave/endereçamento usado pela tabela hash extensível. |
+| `src.core.Principal` | Ponto de entrada. Exibe o menu principal e abre as telas de usuários, cursos e inscrições. |
+| `src.usuarios.MenuUsuarios` | Controle e visão de login, cadastro, edição, exclusão e recuperação de senha. |
+| `src.usuarios.ArquivoUsuario` | CRUD de usuários com índice hash extensível por e-mail. |
+| `src.usuarios.Usuario` | Entidade de usuário persistente. |
+| `src.usuarios.ParEmailId` | Registro de índice por e-mail para `HashExtensivel`. |
+| `src.cursos.MenuCursos` | Controle e visão de cursos, com gestão de inscritos e exportação CSV. |
+| `src.cursos.ArquivoCurso` | CRUD de cursos com índice 1:N via B+. |
+| `src.cursos.Curso` | Entidade de curso persistente com NanoID e estado. |
+| `src.cursos.ParUsuarioCurso` | Par `(idUsuario, idCurso)` usado na árvore B+. |
+| `src.inscricoes.MenuInscricoes` | Controle e visão de inscrições, busca por código, listagem e cancelamento. |
+| `src.inscricoes.ArquivoInscricao` | CRUD de inscrições com dois índices B+ de apoio. |
+| `src.inscricoes.Inscricao` | Entidade de inscrição entre usuário e curso. |
+| `src.inscricoes.ParIntInt` | Par `(id1, id2)` usado nas árvores B+ de inscrição. |
+| `src.core.ArvoreBMais` | Implementação genérica de árvore B+. |
+| `src.core.NanoId` | Gerador de código NanoID. |
+| `src.infraestrutura.ArquivoIndexado` | Armazenamento genérico persistente com índice direto. |
+| `src.infraestrutura.HashExtensivel` | Índice hash extensível para buscas por valor direto. |
+| `src.infraestrutura.RegistroPersistente` | Interface base para registros persistentes. |
+| `src.infraestrutura.RegistroHashExtensivel` | Interface para registros de índice hash. |
+| `src.infraestrutura.ParIdEndereco` | Par `(id, endereco)` usado pelo índice hash. |
 
 ---
 
-## Operações Especiais Implementadas
+## Respostas ao questionário
 
-### Índice Direto por E-mail com Hash Extensível
+1. **Há um CRUD de usuários que estende `ArquivoIndexado`, acrescentando índices diretos e indiretos conforme necessidade?**
+   - ✅ Sim. `ArquivoUsuario` estende `ArquivoIndexado` e usa `HashExtensivel` para índice direto por e-mail.
 
-`ArquivoCliente` utiliza uma `HashExtensivel` para manter um índice direto de e-mail dos usuários. Isso permite que a operação de login seja realizada em tempo O(1) amortizado, sem varredura linear do arquivo. A tabela hash é persistida em disco e cresce dinamicamente conforme novos usuários são inseridos.
+2. **Há um CRUD de cursos que estende `ArquivoIndexado`, acrescentando índices diretos e indiretos conforme necessidade?**
+   - ✅ Sim. `ArquivoCurso` estende `ArquivoIndexado` e usa `ArvoreBMais` para o relacionamento 1:N com usuários.
 
-### Relacionamento 1:N com Árvore B+
+3. **Os cursos estão vinculados aos usuários usando o `idUsuario` como chave estrangeira?**
+   - ✅ Sim. Cada curso armazena `idUsuario`, e o índice B+ mantém a relação com o usuário.
 
-`ArquivoCurso` mantém um índice secundário implementado com `ArvoreBMais<ParIdId>`. Cada entrada armazena um par `(idUsuario, idCurso)`, permitindo recuperar os cursos pertencentes a um usuário específico. A implementação atual recupera todos os pares da árvore e filtra por `idUsuario`, o que suporta diretamente a funcionalidade do menu **Meus Cursos**.
+4. **Há uma árvore B+ que registre o relacionamento 1:N entre usuários e cursos?**
+   - ✅ Sim. `ParUsuarioCurso` em `ArquivoCurso` registra a relação 1:N em `ArvoreBMais`.
 
-### Listagem de Cursos em Ordem Alfabética
+5. **Há um CRUD de usuários que estende `ArquivoIndexado` e usa índices diretos e indiretos?**
+   - ✅ Sim. O CRUD de usuários está implementado e permite cadastro, login, alteração, exclusão e recuperação de senha.
 
-O menu Meus Cursos recupera todos os IDs de cursos do usuário autenticado via `ArvoreBMais`, carrega os objetos `Curso` correspondentes e os ordena alfabeticamente pelo nome antes de exibir a lista numerada ao usuário.
+6. **O trabalho compila corretamente?**
+   - ✅ Sim. O projeto compila com sucesso. Há apenas aviso de API obsoleta em `src/inscricoes/MenuInscricoes.java`.
 
-### Geração de Código NanoID
+7. **O trabalho está completo e funcionando sem erros de execução?**
+   - ✅ Sim para TP1 e TP2 principais. A única limitação atual é que a busca por palavras-chave ainda não foi implementada.
 
-Ao criar um novo curso, o sistema invoca `NanoID.generate()` para produzir um código alfanumérico curto e único que identifica o curso externamente. Este código é armazenado no registro do curso e exibido na tela de detalhes.
+8. **O trabalho é original e não a cópia de um trabalho de outro grupo?**
+   - ✅ Sim. O código é resultado do desenvolvimento do grupo e não de cópia de outro trabalho.
 
-### Controle de Status do Curso
-
-Cada curso possui um atributo de status com quatro estados possíveis: **Ativo**, **Inscrições Encerradas**, **Concluído** e **Cancelado**. As transições de estado são realizadas pelas ações disponíveis na tela de detalhes e persistidas no arquivo binário de cursos.
-
-### Busca de Cursos por NanoID
-
-A funcionalidade de busca por NanoID permite localizar cursos criados por outros usuários usando um código externo que o usuário já possui. Essa busca abre a visualização do curso encontrado sem expor o ID interno do registro.
-
-### Lista Completa de Cursos com Paginação
-
-O sistema implementa a listagem completa de cursos com paginação de 10 em 10 itens. Isso facilita a navegação quando há muitos cursos cadastrados e melhora a usabilidade no console.
-
-### Relacionamento N:N com CursoUsuario e Árvores B+
-
-Foi implementado o relacionamento N:N entre cursos e usuários por meio da entidade de associação `CursoUsuario`, complementado por duas árvores B+ (`arvoreUsuarioInscricao` e `arvoreCursoInscricao`). Isso garante consultas eficientes por usuário e por curso.
-
-
-### Visão de Inscrições e Gestão de Inscritos
-
-A visão de inscrições (`MenuInscricoes`) permite ao usuário ver todos os cursos em que está inscrito. O proponente do curso também consegue gerir seus inscritos a partir do menu de cursos, incluindo exportação da lista e cancelamento individual.
-
-### Integridade de Dados entre Entidades
-
-A integridade de dados entre `Cliente`, `Curso` e `CursoUsuario` é assegurada pela manutenção consistente de chaves e índices em disco, evitando registros órfãos e garantindo que as associações reflitam corretamente o estado atual dos cursos e das inscrições.
-
+---
 
 ## Como Executar
 
-No Windows PowerShell, navegue até o diretório raiz do projeto `AEDS3` e execute os comandos abaixo:
+No Windows PowerShell, navegue até a raiz do projeto `AEDS3` e execute:
 
 **1. Compilar:**
 ```powershell
-cd na pasta do repositorio
-javac -d .\build TP1\*.java aed3\*.java
+cd "c:\Users\ramle\Nova pasta\AEDS3"
+javac -d .\bin $(Get-ChildItem -Path .\src -Recurse -Filter *.java | ForEach-Object { '"' + $_.FullName + '"' })
 ```
 
 **2. Executar:**
 ```powershell
-java -cp .\build TP1.Principal
+java -cp .\bin src.core.Principal
 ```
 
 ---
 
-## Checklist
+**Observação:** o diretório de saída atual é `bin`, e o código-fonte atual está em `src`.
 
-1. **Há um CRUD de usuários (que estende a classe ArquivoIndexado, acrescentando Tabelas Hash Extensíveis e Árvores B+ como índices diretos e indiretos conforme necessidade) que funciona corretamente?**
-   - ✅ **Sim.** `ArquivoCliente` implementa o CRUD completo de usuários, estende `aed3.Arquivo` e utiliza `HashExtensivel` como índice direto por e-mail, permitindo busca eficiente na operação de login. Apenas a parte de edição de dados e login está inconstante e não funciona perfeitamente.
 
-2. **Há um CRUD de cursos (que estende a classe ArquivoIndexado, acrescentando Tabelas Hash Extensíveis e Árvores B+ como índices diretos e indiretos conforme necessidade) que funciona corretamente?**
-   - ✅ **Sim.** `ArquivoCurso` implementa o CRUD completo de cursos, estende `aed3.Arquivo` e mantém o vínculo com o usuário por meio de `ArvoreBMais<ParIdId>`, suportando as operações de listagem, criação, edição e exclusão de cursos.
-
-3. **Os cursos estão vinculados aos usuários usando o idUsuario como chave estrangeira?**
-   - ✅ **Sim.** Cada objeto `Curso` armazena o campo `idUsuario`. Ao criar um curso, `ArquivoCurso` persiste o par `(idUsuario, idCurso)` na árvore B+, estabelecendo a chave estrangeira que vincula o curso ao usuário.
-
-4. **Há uma árvore B+ que registre o relacionamento 1:N entre usuários e cursos?**
-   - ✅ **Sim.** `ArvoreBMais<ParIdId>` em `ArquivoCurso` indexa os pares `(idUsuario, idCurso)`, permitindo recuperar todos os cursos de um usuário com uma consulta por prefixo na árvore.
-
-5. **Há um CRUD de usuários (que estende a classe ArquivoIndexado, acrescentando Tabelas Hash Extensíveis e Árvores B+ como índices diretos e indiretos conforme necessidade)?**
-   - ✅ **Sim.** `ArquivoCliente` estende `aed3.Arquivo` (equivalente a `ArquivoIndexado`) e acrescenta `HashExtensivel` como índice direto por e-mail, atendendo ao requisito estrutural da questão.
-
-6. **O trabalho compila corretamente?**
-   - ✅ **Sim.** O projeto compila sem erros com o comando `javac` especificado na seção **Como Executar**.
-
-7. **O trabalho está completo e funcionando sem erros de execução?**
-   - ✅ **Todas as funcionalidades funcionam perfeitamente, menos a alteração de dados de login do usuário** O sistema foi testado e executa corretamente todos os fluxos: tela de login, cadastro de usuário, menu principal, listagem e gestão de cursos (excluir e criar) e controle de status. Edição de dados de login do usuário esta inconstante, as vezes funciona e as vezes não.
-
-8. **O trabalho é original e não a cópia de um trabalho de outro grupo?**
-   - ✅ **Sim.** O sistema foi desenvolvido integralmente pelo grupo a partir da especificação da disciplina e das classes base fornecidas, sem cópia de trabalhos de outros grupos.
-
----
 
 **LINK VIDEO DE TESTE DO PROGRAMA TP1 :** https://youtu.be/u4ZRTKo4rf4
 **LINK VIDEO DE TESTE DO PROGRAMA TP2 :** https://youtu.be/wVEOqWgfq9M
