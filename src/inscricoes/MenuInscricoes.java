@@ -69,7 +69,7 @@ public class MenuInscricoes {
                     buscarPorCodigo(usuario);
                     break;
                 case "B":
-                    System.out.println("\n[Busca por palavras-chave disponível no TP3]");
+                    buscarPorPalavras(usuario);
                     break;
                 case "C":
                     listarTodosCursos(usuario);
@@ -332,6 +332,56 @@ public class MenuInscricoes {
             System.out.println("Inscrição cancelada com sucesso!");
         } catch (Exception e) {
             System.out.println("Erro ao cancelar inscrição: " + e.getMessage());
+        }
+    }
+
+    private void buscarPorPalavras(Usuario usuario) {
+        System.out.println("\nEntrePares 1.0");
+        System.out.println("--------------");
+        System.out.println("> Início > Minhas inscrições > Busca por palavras-chave");
+        System.out.println();
+        System.out.print("Digite as palavras-chave: ");
+        String consulta = console.nextLine().trim();
+
+        if (consulta.isEmpty()) {
+            System.out.println("Nenhuma palavra informada.");
+            return;
+        }
+
+        try {
+            List<Curso> cursos = arqCursos.buscarPorPalavras(consulta);
+
+            if (cursos.isEmpty()) {
+                System.out.println("\nNenhum curso encontrado para \"" + consulta + "\".");
+                return;
+            }
+
+            System.out.println("\nResultados para \"" + consulta + "\" (" + cursos.size() + " encontrado(s)):\n");
+            for (int i = 0; i < cursos.size(); i++) {
+                Curso c = cursos.get(i);
+                System.out.printf("(%d) %s - %s%s%n",
+                    i + 1, c.nome, c.dataInicio, formatStatusLabel(c));
+            }
+
+            System.out.println("\nDigite o número para ver detalhes ou (R) para retornar:");
+            System.out.print("Opção: ");
+            String opcao = console.nextLine().trim().toUpperCase();
+
+            if (!opcao.equals("R")) {
+                try {
+                    int escolha = Integer.parseInt(opcao);
+                    if (escolha >= 1 && escolha <= cursos.size()) {
+                        exibirDetalhesCursoParaInscricao(cursos.get(escolha - 1), usuario);
+                    } else {
+                        System.out.println("Número inválido.");
+                    }
+                } catch (NumberFormatException e) {
+                    System.out.println("Opção inválida.");
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Erro na busca: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 }
