@@ -30,8 +30,12 @@ public class ArquivoCurso extends ArquivoIndexado<Curso> {
     }
 
     private void reindexarSeNecessario() throws Exception {
-        if (indiceInvertido.numeroEntidades() == 0) {
-            List<Curso> todos = super.readAll();
+        List<Curso> todos = super.readAll();
+        int totalArquivo = (int) todos.stream().filter(c -> c != null).count();
+        int totalIndice = indiceInvertido.numeroEntidades();
+        if (totalIndice < totalArquivo) {
+            // Reindexa tudo do zero para garantir consistência
+            indiceInvertido.limpar();
             for (Curso c : todos) {
                 if (c != null) {
                     indiceInvertido.indexarCurso(c.getId(), c.nome);

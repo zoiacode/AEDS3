@@ -158,4 +158,11 @@ public class IndiceInvertidoCursos {
             return "(id=" + idCurso + ", score=" + String.format("%.3f", pontuacao) + ")";
         }
     }
+
+    public void limpar() throws Exception {
+        listaInvertida.close();
+        new java.io.File(ARQ_DICIONARIO).delete();
+        new java.io.File(ARQ_BLOCOS).delete();
+        listaInvertida = new ListaInvertida(ITENS_POR_BLOCO, ARQ_DICIONARIO, ARQ_BLOCOS);
+    }
 }

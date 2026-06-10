@@ -58,7 +58,6 @@ public class MenuInscricoes {
             System.out.println();
             System.out.println("(A) Buscar curso por código");
             System.out.println("(B) Buscar curso por palavras-chave");
-            System.out.println("(C) Listar todos os cursos");
             System.out.println();
             System.out.println("(R) Retornar ao menu anterior");
             System.out.print("\nOpção: ");
@@ -70,9 +69,6 @@ public class MenuInscricoes {
                     break;
                 case "B":
                     buscarPorPalavras(usuario);
-                    break;
-                case "C":
-                    listarTodosCursos(usuario);
                     break;
                 case "R":
                     break;
@@ -131,83 +127,6 @@ public class MenuInscricoes {
             exibirDetalhesCursoParaInscricao(curso, usuario);
         } catch (Exception e) {
             System.out.println("Erro ao buscar curso: " + e.getMessage());
-        }
-    }
-
-    private void listarTodosCursos(Usuario usuario) {
-        try {
-            List<Curso> cursos = arqCursos.readAll();
-            if (cursos.isEmpty()) {
-                System.out.println("\nNenhum curso cadastrado.");
-                return;
-            }
-            cursos.sort(Comparator.comparing(c -> parseData(c.dataInicio)));
-            paginarCursos(cursos, usuario);
-        } catch (Exception e) {
-            System.out.println("Erro ao listar cursos: " + e.getMessage());
-        }
-    }
-
-    private void paginarCursos(List<Curso> cursos, Usuario usuario) {
-        int total = cursos.size();
-        int paginaAtual = 0;
-        int paginas = (total + 9) / 10;
-
-        while (true) {
-            int inicio = paginaAtual * 10;
-            int fim = Math.min(inicio + 10, total);
-
-            System.out.println("\nEntrePares 1.0");
-            System.out.println("--------------");
-            System.out.println("> Início > Minhas inscrições > Lista de cursos");
-            System.out.println();
-            System.out.printf("Página %d de %d\n\n", paginaAtual + 1, paginas);
-
-            for (int i = inicio; i < fim; i++) {
-                Curso curso = cursos.get(i);
-                int numero = i - inicio + 1;
-                String marcador = (numero == 10) ? "0" : String.valueOf(numero);
-                System.out.printf("(%s) %s - %s%s\n", marcador, curso.nome, curso.dataInicio, formatStatusLabel(curso));
-            }
-
-            System.out.println();
-            if (paginaAtual > 0) {
-                System.out.println("(A) Página anterior");
-            }
-            if (paginaAtual < paginas - 1) {
-                System.out.println("(B) Próxima página");
-            }
-            System.out.println();
-            System.out.println("(R) Retornar ao menu anterior");
-            System.out.print("\nOpção: ");
-            String opcao = console.nextLine().toUpperCase();
-
-            if (opcao.equals("A") && paginaAtual > 0) {
-                paginaAtual--;
-                continue;
-            }
-            if (opcao.equals("B") && paginaAtual < paginas - 1) {
-                paginaAtual++;
-                continue;
-            }
-            if (opcao.equals("R")) {
-                return;
-            }
-
-            try {
-                int escolha = Integer.parseInt(opcao);
-                if (escolha == 0) {
-                    escolha = 10;
-                }
-                if (escolha >= 1 && escolha <= fim - inicio) {
-                    Curso curso = cursos.get(inicio + escolha - 1);
-                    exibirDetalhesCursoParaInscricao(curso, usuario);
-                } else {
-                    System.out.println("Número de curso inválido!");
-                }
-            } catch (NumberFormatException e) {
-                System.out.println("Opção inválida!");
-            }
         }
     }
 
@@ -385,5 +304,3 @@ public class MenuInscricoes {
         }
     }
 }
-
-
