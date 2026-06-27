@@ -506,4 +506,4 @@ java -cp .\bin src.core.Principal
 
 **LINK VIDEO DE TESTE DO PROGRAMA TP2 :** https://youtu.be/wVEOqWgfq9M
 
-**LINK VIDEO DE TESTE DO PROGRAMA TP3 :** 
+**LINK VIDEO DE TESTE DO PROGRAMA TP3 :** https://youtu.be/I-WvNRbNtbk
